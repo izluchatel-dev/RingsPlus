@@ -1,0 +1,75 @@
+<resources>
+    <array name="material_calendar_months_array">
+        <item>Январь</item>
+        <item>Февраль</item>
+        <item>Март</item>
+        <item>Апрель</item>
+        <item>Май</item>
+        <item>Июнь</item>
+        <item>Июль</item>
+        <item>Август</item>
+        <item>Сентябрь</item>
+        <item>Октябрь</item>
+        <item>Ноябрь</item>
+        <item>Декабрь</item>
+    </array>
+    <string name="app_name">Заказ колец</string>
+    <string name="detail_button">Редактировать состав</string>
+
+    <string name="load_progress_wait">Идет синхронизация данных. Пожалуйста подождите…</string>
+    <string name="user_hint">Сменить пользователя…</string>
+    <string name="stock_hint">Склад</string>
+    <string name="options_hint">Настройки</string>
+    <string name="add_hint">Добавление заказа</string>
+    <string name="refresh_hint">Обновить</string>
+    <string name="calculate_hint">Расчитать итоги дня</string>
+    <string name="open_day_hint">Открыть день</string>
+    <string name="lock_day_hint">Закрыть день</string>
+
+    <string name="user_edit_hint">Введите имя пользователя</string>
+    <string name="order_title_hint">Введите название заказа</string>
+    <string name="order_detail_hint">Введите описание заказа</string>
+    <string name="user_title">Указанное имя пользователя будет отображено в списке Ваших заявок по составу.</string>
+    <string name="user_save_btn">Сохранить</string>
+    <string name="add_order_item_btn">Сохранить</string>
+
+    <string name="change_user_name_fmt">Имя пользователя %s успешно сохранено!</string>
+
+    <string name="auto_refresh_switch">Автоматическое обновление</string>
+    <string name="receive_notify_switch">Получать уведомления</string>
+
+    <string name="clear_data_title">Нажмите на кнопку Очистить для удаления данных о составах заявок.
+        Будут удалены все сохраненные заявки кроме тех что сделаны в текущем месяце.</string>
+    <string name="clear_data_button">Очистить</string>
+
+    <string name="clear_progress_wait">Идет очистка данных. Пожалуйста подождите…</string>
+    <string name="delete_item_ballon">Элемент %s успешно удален со склада</string>
+    <string name="delete_order_item_ballon">Заказ %s успешно удален</string>
+    <string name="delete_item_err">Произошла ошибка удаления элемента со склада: %s</string>
+    <string name="delete_order_item_err">Произошла ошибка удаления заказа: %s</string>
+    <string name="clear_successfull">Очистка данных успешно завершена</string>
+    <string name="clear_item_err">Произошла ошибка очистки данных: %s</string>
+    <string name="get_data_err">Произошла ошибка получения данных: %s</string>
+    <string name="delete_item_wait">Идет удаление элемента со склада. Пожалуйста подождите…</string>
+    <string name="delete_order_item_wait">Идет удаление заказа. Пожалуйста подождите…</string>
+    <string name="set_day_status">Идет изменение статуса дня. Пожалуйста подождите…</string>
+    <string name="day_status_change_open">Статус дня успешно обновлен на ОТКРЫТЫЙ</string>
+    <string name="day_status_change_close">Статус дня успешно обновлен на ЗАРКЫТЫЙ</string>
+    <string name="day_status_err">Произошла ошибка изменения статуса дня: %s</string>
+    <string name="add_dialog_ok">OK</string>
+    <string name="add_dialog_cancel">Отмена</string>
+    <string name="add_item_wait">Идет добавление элемента на склад. Пожалуйста подождите…</string>
+    <string name="add_item_ballon">Элемент %s успешно добавлен на склад</string>
+    <string name="add_item_err">Произошла ошибка добавления элемента на склад: %s</string>
+
+    <string name="add_item_dialog_title">Введите имя нового элемента и нажмите ОК</string>
+
+    <string name="material_calendar_monday">Пн</string>
+    <string name="material_calendar_tuesday">Вт</string>
+    <string name="material_calendar_wednesday">Ср</string>
+    <string name="material_calendar_thursday">Чт</string>
+    <string name="material_calendar_friday">Пт</string>
+    <string name="material_calendar_saturday">Сб</string>
+
+    <string name="material_calendar_sunday">Вс</string>
+</resources>

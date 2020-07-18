@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_day_status"
+        app:showAsAction="always"
+        android:enabled="true"
+        android:icon="@drawable/lock_day"
+        android:title="@string/lock_day_hint"/>
+
+    <item
+        android:id="@+id/action_calculate"
+        app:showAsAction="always"
+        android:enabled="true"
+        android:icon="@drawable/calculate"
+        android:title="@string/calculate_hint"/>
+</menu>
