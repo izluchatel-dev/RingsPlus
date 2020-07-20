@@ -28,6 +28,9 @@ import ru.ringsplus.app.model.RingItem;
 import ru.ringsplus.app.model.RingOrderItem;
 import ru.ringsplus.app.model.StockCollection;
 
+import static ru.ringsplus.app.OrderListActivity.PUT_EDIT_ORDER_POSITION;
+import static ru.ringsplus.app.OrderListActivity.PUT_EDIT_ORDER_TITLE;
+
 public class AddOrderActivity extends AppCompatActivity implements AddOrderRingsViewAdapter.MinusClickListener, AddOrderRingsViewAdapter.PlusClickListener {
 
     public static final String PUT_PARAM_DAY = "day";
@@ -44,8 +47,10 @@ public class AddOrderActivity extends AppCompatActivity implements AddOrderRings
     private EditText mOrderDetails;
     private Button mSaveButton;
 
-
     private DayItem mDayItem;
+
+    public String editOrderTitle = "";
+    public Integer editOrderPosition = 0;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -109,21 +114,73 @@ public class AddOrderActivity extends AppCompatActivity implements AddOrderRings
             String orderDetails = String.valueOf(mOrderDetails.getText()).trim();
             String orderAuthor = AppOptions.getInstance().getUserName(this);
 
-            if (!hasOrderItemInCurrentDay(orderTitle)) {
-                OrderItem addOrderItem = new OrderItem(orderTitle, orderDetails, orderAuthor);
+            //Было редактирование
+            if ((editOrderTitle != null) && (!editOrderTitle.isEmpty())) {
+                if ((editOrderTitle.equals(orderTitle)) || (!hasOrderItemInCurrentDay(orderTitle))) {
+                    OrderItem editOrderItem = getCurrentEditOrderItemByTitle(editOrderTitle);
 
-                for (RingItem nextRingItem : StockCollection.getInstance().getRingItems()) {
-                    if (nextRingItem.getCount() > 0) {
-                        addOrderItem.getRingOrderItemList().add(new RingOrderItem(nextRingItem.getName(), nextRingItem.getCount()));
+                    if (editOrderItem != null) {
+                        editOrderItem.setTitle(orderTitle);
+                        editOrderItem.setDetails(orderDetails);
+                        editOrderItem.setAuthor(orderAuthor);
+                        editOrderItem.getRingOrderItemList().clear();
+
+                        for (RingItem nextRingItem : StockCollection.getInstance().getRingItems()) {
+                            if (nextRingItem.getCount() > 0) {
+                                editOrderItem.getRingOrderItemList().add(new RingOrderItem(nextRingItem.getName(), nextRingItem.getCount()));
+                            }
+                        }
+
+                        SaveOrderItemTask saveOrderItemTask = new SaveOrderItemTask(this, true);
+                        saveOrderItemTask.execute(editOrderItem);
                     }
+                } else {
+                    Toast.makeText(this, String.format(getString(R.string.add_order_item_exist_msg), orderTitle), Toast.LENGTH_SHORT).show();
                 }
+            } else { //Добавление
+                if (!hasOrderItemInCurrentDay(orderTitle)) {
+                    OrderItem addOrderItem = new OrderItem(orderTitle, orderDetails, orderAuthor);
 
-                AddOrderItemTask addOrderItemTask = new AddOrderItemTask(this);
-                addOrderItemTask.execute(addOrderItem);
-            } else {
-                Toast.makeText(this, String.format(getString(R.string.add_order_item_exist_msg), orderTitle), Toast.LENGTH_SHORT).show();
+                    for (RingItem nextRingItem : StockCollection.getInstance().getRingItems()) {
+                        if (nextRingItem.getCount() > 0) {
+                            addOrderItem.getRingOrderItemList().add(new RingOrderItem(nextRingItem.getName(), nextRingItem.getCount()));
+                        }
+                    }
+
+                    SaveOrderItemTask saveOrderItemTask = new SaveOrderItemTask(this, false);
+                    saveOrderItemTask.execute(addOrderItem);
+                } else {
+                    Toast.makeText(this, String.format(getString(R.string.add_order_item_exist_msg), orderTitle), Toast.LENGTH_SHORT).show();
+                }
             }
         });
+
+        fillOrderItemByOrderTitle();
+    }
+
+    private void fillOrderItemByOrderTitle() {
+        editOrderTitle = getIntent().getStringExtra(PUT_EDIT_ORDER_TITLE);
+        editOrderPosition = getIntent().getIntExtra(PUT_EDIT_ORDER_POSITION, 0);
+
+        if ((editOrderTitle != null) && (!editOrderTitle.isEmpty()))
+            for (OrderItem nextOrderItem: mDayItem.getOrderItemList()) {
+                if (nextOrderItem.getTitle().equals(editOrderTitle)) {
+                    mOrderTitleName.setText(nextOrderItem.getTitle());
+                    mOrderDetails.setText(nextOrderItem.getDetails());
+
+                    for (RingItem nextRingItem : StockCollection.getInstance().getRingItems()) {
+                        for (RingOrderItem ringOrderItem: nextOrderItem.getRingOrderItemList()) {
+                            if (nextRingItem.getName().equals(ringOrderItem.getRingName())) {
+                                nextRingItem.setCount(ringOrderItem.getCount());
+
+                                break;
+                            }
+                        }
+                    }
+
+                    break;
+                }
+            }
     }
 
     private void checkSaveButtonEnabled() {
@@ -134,6 +191,19 @@ public class AddOrderActivity extends AppCompatActivity implements AddOrderRings
             mSaveButton.setEnabled(false);
             mSaveButton.setBackgroundResource(R.color.disabledColor);
         }
+    }
+
+    private OrderItem getCurrentEditOrderItemByTitle(String orderTitle) {
+        OrderItem resultOrderItem = null;
+
+        for (OrderItem nextOrderItem: mDayItem.getOrderItemList()) {
+            if (nextOrderItem.getTitle().equals(orderTitle)) {
+                resultOrderItem = nextOrderItem;
+                break;
+            }
+        }
+
+        return resultOrderItem;
     }
 
     private void clearRingCount() {
@@ -219,18 +289,20 @@ public class AddOrderActivity extends AppCompatActivity implements AddOrderRings
         mAddOrderRingsViewAdapter.notifyItemChanged(position);
     }
 
-    class AddOrderStatus {
+    class SaveOrderStatus {
         public String orderTitleName;
         public String errMsg;
     }
 
-    class AddOrderItemTask extends AsyncTask<OrderItem, Void, AddOrderStatus> {
+    class SaveOrderItemTask extends AsyncTask<OrderItem, Void, SaveOrderStatus> {
 
         private ProgressDialog dialog;
         private Activity mParentActivity;
+        private Boolean mIsEditOrderItem;
 
-        public AddOrderItemTask(AddOrderActivity activity) {
+        public SaveOrderItemTask(AddOrderActivity activity, Boolean isEditOrderItem) {
             mParentActivity = activity;
+            mIsEditOrderItem = isEditOrderItem;
 
             dialog = new ProgressDialog(activity);
         }
@@ -239,19 +311,19 @@ public class AddOrderActivity extends AppCompatActivity implements AddOrderRings
         protected void onPreExecute() {
             super.onPreExecute();
 
-            dialog.setMessage(getString(R.string.add_order_item_wait));
+            dialog.setMessage(getString(R.string.save_order_item_wait));
             dialog.show();
         }
 
         @Override
-        protected AddOrderStatus doInBackground(OrderItem... orderItems) {
+        protected SaveOrderStatus doInBackground(OrderItem... orderItems) {
             try {
                 TimeUnit.SECONDS.sleep(1);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
 
-            AddOrderStatus orderStatus = new AddOrderStatus();
+            SaveOrderStatus orderStatus = new SaveOrderStatus();
             orderStatus.errMsg = "";
             orderStatus.orderTitleName = orderItems[0].getTitle();
 
@@ -260,18 +332,20 @@ public class AddOrderActivity extends AppCompatActivity implements AddOrderRings
                     mDayItem.getOrderItemList().add(orderItems[0]);
                     StockCollection.getInstance().getDayCollection().add(mDayItem);
                 } else {
-                    mDayItem.getOrderItemList().add(orderItems[0]);
+                    if (!mIsEditOrderItem) {
+                        mDayItem.getOrderItemList().add(orderItems[0]);
+                    }
                 }
 
             } catch (Exception e) {
-                orderStatus.errMsg = String.format(getString(R.string.add_order_item_err), e.getMessage());
+                orderStatus.errMsg = String.format(getString(R.string.save_order_item_err), e.getMessage());
             }
 
             return orderStatus;
         }
 
         @Override
-        protected void onPostExecute(AddOrderStatus orderStatus) {
+        protected void onPostExecute(SaveOrderStatus orderStatus) {
             super.onPostExecute(orderStatus);
 
             if (dialog.isShowing()) {
@@ -283,6 +357,7 @@ public class AddOrderActivity extends AppCompatActivity implements AddOrderRings
             } else {
                 Intent intent = new Intent();
                 intent.putExtra(ORDER_TITLE_PUT, orderStatus.orderTitleName);
+                intent.putExtra(PUT_EDIT_ORDER_POSITION, editOrderPosition);
                 setResult(RESULT_OK, intent);
 
                 finish();

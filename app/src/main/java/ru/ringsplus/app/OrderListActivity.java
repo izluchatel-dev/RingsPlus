@@ -32,8 +32,11 @@ public class OrderListActivity extends AppCompatActivity implements OrderListVie
     public static final String PUT_PARAM_DAY = "day";
     public static final String PUT_PARAM_MONTH = "month";
     public static final String PUT_PARAM_YEAR = "year";
+    public static final String PUT_EDIT_ORDER_TITLE = "editOrderTitle";
+    public static final String PUT_EDIT_ORDER_POSITION = "editOrderPosition";
 
     private static final int ADD_ORDER_REQUEST_ID = 1;
+    private static final int EDIT_ORDER_REQUEST_ID = 2;
 
     private DayItem mDayItem;
 
@@ -176,7 +179,14 @@ public class OrderListActivity extends AppCompatActivity implements OrderListVie
     public void onItemClick(View view, int position) {
         OrderItem mClickOrderItem = mOrderListViewAdapter.getItem(position);
 
-        Toast.makeText(this, mClickOrderItem.getTitle(), Toast.LENGTH_SHORT).show();
+        Intent editOrderIntent = new Intent(getBaseContext(), AddOrderActivity.class);
+        editOrderIntent.putExtra(PUT_PARAM_DAY, mDayItem.getDay());
+        editOrderIntent.putExtra(PUT_PARAM_MONTH, mDayItem.getMonth());
+        editOrderIntent.putExtra(PUT_PARAM_YEAR, mDayItem.getYear());
+        editOrderIntent.putExtra(PUT_EDIT_ORDER_TITLE, mClickOrderItem.getTitle());
+        editOrderIntent.putExtra(PUT_EDIT_ORDER_POSITION, position);
+
+        startActivityForResult(editOrderIntent, EDIT_ORDER_REQUEST_ID);
     }
 
     class SetStatusDayTask extends AsyncTask<DayStatus, Void, String> {
@@ -300,17 +310,26 @@ public class OrderListActivity extends AppCompatActivity implements OrderListVie
             return;
         }
 
-        if ((requestCode == ADD_ORDER_REQUEST_ID) && (resultCode == RESULT_OK)) {
+        if (((requestCode == ADD_ORDER_REQUEST_ID) || (requestCode == EDIT_ORDER_REQUEST_ID)) && (resultCode == RESULT_OK)) {
             String orderTitle = data.getStringExtra(AddOrderActivity.ORDER_TITLE_PUT);
+            Integer orderPosition = data.getIntExtra(PUT_EDIT_ORDER_POSITION, 0);
 
             if (!orderTitle.isEmpty()) {
                 String changeMessage = String.format(getString(R.string.order_item_add_success_fmt), orderTitle);
 
-                mDayItem = getDayItemFromIntent();
+               if (requestCode == ADD_ORDER_REQUEST_ID) {
+                   mDayItem = getDayItemFromIntent();
 
-                mOrderListViewAdapter.notifyItemInserted(mDayItem.getOrderItemList().size());
+                   mOrderListViewAdapter.notifyItemInserted(mDayItem.getOrderItemList().size());
 
-                recyclerOrderList.scrollToPosition(mOrderListViewAdapter.getItemCount() - 1);
+                   recyclerOrderList.scrollToPosition(mOrderListViewAdapter.getItemCount() - 1);
+               } else if (requestCode == EDIT_ORDER_REQUEST_ID) {
+                   if (orderPosition > 0) {
+                       mOrderListViewAdapter.notifyItemChanged(orderPosition);
+
+                       recyclerOrderList.scrollToPosition(orderPosition);
+                   }
+               }
 
                 Toast.makeText(getApplicationContext(),changeMessage, Toast.LENGTH_SHORT).show();
             }

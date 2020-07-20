@@ -19,15 +19,6 @@ public class StockCollection {
         StockCollection.getInstance().getRingItems().add(new RingItem( "Кольцо 20*30"));
         StockCollection.getInstance().getRingItems().add(new RingItem( "Кольцо 30*20"));
         StockCollection.getInstance().getRingItems().add(new RingItem( "Кольцо 30*30"));
-        StockCollection.getInstance().getRingItems().add(new RingItem( "Кольцо 20*20"));
-        StockCollection.getInstance().getRingItems().add(new RingItem( "Кольцо 20*30"));
-        StockCollection.getInstance().getRingItems().add(new RingItem( "Кольцо 30*20"));
-        StockCollection.getInstance().getRingItems().add(new RingItem( "Кольцо 30*30"));
-        StockCollection.getInstance().getRingItems().add(new RingItem( "Кольцо 20*20"));
-        StockCollection.getInstance().getRingItems().add(new RingItem( "Кольцо 20*30"));
-        StockCollection.getInstance().getRingItems().add(new RingItem( "Кольцо 30*20"));
-        StockCollection.getInstance().getRingItems().add(new RingItem( "Кольцо 30*30"));
-
 
         //----------------------------------------------------------------
 

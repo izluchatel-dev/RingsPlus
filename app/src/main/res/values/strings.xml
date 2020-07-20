@@ -48,13 +48,13 @@
     <string name="delete_order_item_ballon">Заказ %s успешно удален</string>
     <string name="delete_item_err">Произошла ошибка удаления элемента со склада: %s</string>
     <string name="delete_order_item_err">Произошла ошибка удаления заказа: %s</string>
-    <string name="add_order_item_err">Произошла ошибка сохранения заказа: %s</string>
+    <string name="save_order_item_err">Произошла ошибка сохранения заказа: %s</string>
     <string name="clear_successfull">Очистка данных успешно завершена</string>
     <string name="clear_item_err">Произошла ошибка очистки данных: %s</string>
     <string name="get_data_err">Произошла ошибка получения данных: %s</string>
     <string name="delete_item_wait">Идет удаление элемента со склада. Пожалуйста подождите…</string>
     <string name="delete_order_item_wait">Идет удаление заказа. Пожалуйста подождите…</string>
-    <string name="add_order_item_wait">Идет сохранение заказа. Пожалуйста подождите…</string>
+    <string name="save_order_item_wait">Идет сохранение заказа. Пожалуйста подождите…</string>
     <string name="set_day_status">Идет изменение статуса дня. Пожалуйста подождите…</string>
     <string name="day_status_change_open">Статус дня успешно обновлен на ОТКРЫТЫЙ</string>
     <string name="day_status_change_close">Статус дня успешно обновлен на ЗАРКЫТЫЙ</string>
