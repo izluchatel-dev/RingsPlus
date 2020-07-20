@@ -292,6 +292,29 @@ public class OrderListActivity extends AppCompatActivity implements OrderListVie
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
+        if (data == null) {
+            return;
+        }
+
+        if ((requestCode == ADD_ORDER_REQUEST_ID) && (resultCode == RESULT_OK)) {
+            String orderTitle = data.getStringExtra(AddOrderActivity.ORDER_TITLE_PUT);
+
+            if (!orderTitle.isEmpty()) {
+                String changeMessage = String.format(getString(R.string.order_item_add_success_fmt), orderTitle);
+
+                mDayItem = getDayItemFromIntent();
+
+                mOrderListViewAdapter.notifyItemInserted(mDayItem.getOrderItemList().size());
+
+                recyclerOrderList.scrollToPosition(mOrderListViewAdapter.getItemCount() - 1);
+
+                Toast.makeText(getApplicationContext(),changeMessage, Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
 
 }

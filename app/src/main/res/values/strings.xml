@@ -13,7 +13,7 @@
         <item>Ноябрь</item>
         <item>Декабрь</item>
     </array>
-    <string name="app_name">Заказ колец</string>
+    <string name="app_name">ЖБИ Кольца</string>
     <string name="detail_button">Редактировать состав</string>
 
     <string name="load_progress_wait">Идет синхронизация данных. Пожалуйста подождите…</string>
@@ -34,6 +34,7 @@
     <string name="add_order_item_btn">Сохранить</string>
 
     <string name="change_user_name_fmt">Имя пользователя %s успешно сохранено!</string>
+    <string name="order_item_add_success_fmt">Заказ %s успешно сохранен!</string>
 
     <string name="auto_refresh_switch">Автоматическое обновление</string>
     <string name="receive_notify_switch">Получать уведомления</string>
@@ -47,11 +48,13 @@
     <string name="delete_order_item_ballon">Заказ %s успешно удален</string>
     <string name="delete_item_err">Произошла ошибка удаления элемента со склада: %s</string>
     <string name="delete_order_item_err">Произошла ошибка удаления заказа: %s</string>
+    <string name="add_order_item_err">Произошла ошибка сохранения заказа: %s</string>
     <string name="clear_successfull">Очистка данных успешно завершена</string>
     <string name="clear_item_err">Произошла ошибка очистки данных: %s</string>
     <string name="get_data_err">Произошла ошибка получения данных: %s</string>
     <string name="delete_item_wait">Идет удаление элемента со склада. Пожалуйста подождите…</string>
     <string name="delete_order_item_wait">Идет удаление заказа. Пожалуйста подождите…</string>
+    <string name="add_order_item_wait">Идет сохранение заказа. Пожалуйста подождите…</string>
     <string name="set_day_status">Идет изменение статуса дня. Пожалуйста подождите…</string>
     <string name="day_status_change_open">Статус дня успешно обновлен на ОТКРЫТЫЙ</string>
     <string name="day_status_change_close">Статус дня успешно обновлен на ЗАРКЫТЫЙ</string>
@@ -61,6 +64,7 @@
     <string name="add_item_wait">Идет добавление элемента на склад. Пожалуйста подождите…</string>
     <string name="add_item_ballon">Элемент %s успешно добавлен на склад</string>
     <string name="add_item_err">Произошла ошибка добавления элемента на склад: %s</string>
+    <string name="add_order_item_exist_msg">Заказ с названием %s уже существует. Пожалуйста введите другое название.</string>
 
     <string name="add_item_dialog_title">Введите имя нового элемента и нажмите ОК</string>
 

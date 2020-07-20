@@ -39,7 +39,13 @@ public class OrderListViewAdapter extends RecyclerView.Adapter<OrderListViewAdap
         OrderItem nextOrderItem = mOrderItems.get(position);
 
         holder.mTitleText.setText(nextOrderItem.getTitle());
-        holder.mDescriptionText.setText(nextOrderItem.getDetails());
+
+        if (!nextOrderItem.getDetails().isEmpty()) {
+            holder.mDescriptionText.setText(nextOrderItem.getDetails());
+            holder.mDescriptionText.setVisibility(View.VISIBLE);
+        } else {
+            holder.mDescriptionText.setVisibility(View.GONE);
+        }
 
         if (nextOrderItem.getRingOrderItemList().size() > 0) {
             StringBuilder mRingOrderItems = new StringBuilder();

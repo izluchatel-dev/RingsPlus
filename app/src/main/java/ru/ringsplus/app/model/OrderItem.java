@@ -19,10 +19,6 @@ public class OrderItem {
     }
 
     public String getTitle() {
-        if (title.isEmpty()) {
-            title = " - ";
-        }
-
         return title;
     }
 
@@ -31,10 +27,6 @@ public class OrderItem {
     }
 
     public String getDetails() {
-        if (details.isEmpty()) {
-            details = " - ";
-        }
-
         return details;
     }
 
