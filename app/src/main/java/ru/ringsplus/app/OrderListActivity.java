@@ -70,6 +70,12 @@ public class OrderListActivity extends AppCompatActivity implements OrderListVie
                     setStatusDay(OpenDay);
                 }
             }
+        } else if (item.getItemId() == R.id.action_calculate) {
+            Intent summaIntent = new Intent(getBaseContext(), SummaActivity.class);
+            summaIntent.putExtra(PUT_PARAM_DAY, mDayItem.getDay());
+            summaIntent.putExtra(PUT_PARAM_MONTH, mDayItem.getMonth());
+            summaIntent.putExtra(PUT_PARAM_YEAR, mDayItem.getYear());
+            startActivity(summaIntent);
         }
 
         return true;

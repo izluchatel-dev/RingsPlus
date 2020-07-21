@@ -10,8 +10,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".SummaActivity"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".AddOrderActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".OrderListActivity"
             android:screenOrientation="portrait" />
