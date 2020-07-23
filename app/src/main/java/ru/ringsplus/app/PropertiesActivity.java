@@ -13,13 +13,12 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import ru.ringsplus.app.model.AppOptions;
-import ru.ringsplus.app.model.StockCollection;
 import ru.ringsplus.app.model.DayItem;
+import ru.ringsplus.app.model.StockCollection;
 
 public class PropertiesActivity extends AppCompatActivity {
 
@@ -90,12 +89,6 @@ public class PropertiesActivity extends AppCompatActivity {
 
         @Override
         protected String doInBackground(Void... voids) {
-            try {
-                TimeUnit.SECONDS.sleep(1);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
             String mStatusMsg = getString(R.string.clear_successfull);
 
             try {

@@ -13,8 +13,6 @@ import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.util.concurrent.TimeUnit;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -216,12 +214,6 @@ public class OrderListActivity extends AppCompatActivity implements OrderListVie
 
         @Override
         protected String doInBackground(DayStatus... dayStatuses) {
-            try {
-                TimeUnit.SECONDS.sleep(1);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
             String mStatusMsg = "";
             if (dayStatuses[0].equals(OpenDay)) {
                 mStatusMsg =  getString(R.string.day_status_change_open);
@@ -273,11 +265,6 @@ public class OrderListActivity extends AppCompatActivity implements OrderListVie
 
         @Override
         protected String doInBackground(OrderItem... orderItems) {
-            try {
-                TimeUnit.SECONDS.sleep(1);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
 
             String mStatusMsg =  String.format(getString(R.string.delete_order_item_ballon), orderItems[0].getTitle());
 

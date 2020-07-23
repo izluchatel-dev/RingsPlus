@@ -17,7 +17,6 @@ import com.applandeo.materialcalendarview.EventDay;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -86,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
             orderListIntent.putExtra(PUT_PARAM_YEAR, putYear);
             startActivity(orderListIntent);
         });
+
     }
 
     public void updateCalendarEvents() {
@@ -116,12 +116,6 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected String doInBackground(Context... contexts) {
-            try {
-                TimeUnit.SECONDS.sleep(1);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
             String mStatusMsg = "";
 
             try {

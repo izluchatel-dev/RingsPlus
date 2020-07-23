@@ -15,8 +15,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.concurrent.TimeUnit;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -317,12 +315,6 @@ public class AddOrderActivity extends AppCompatActivity implements AddOrderRings
 
         @Override
         protected SaveOrderStatus doInBackground(OrderItem... orderItems) {
-            try {
-                TimeUnit.SECONDS.sleep(1);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
             SaveOrderStatus orderStatus = new SaveOrderStatus();
             orderStatus.errMsg = "";
             orderStatus.orderTitleName = orderItems[0].getTitle();

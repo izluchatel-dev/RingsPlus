@@ -1,21 +1,25 @@
 package ru.ringsplus.app;
 
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
-import java.util.concurrent.TimeUnit;
+import java.util.UUID;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -23,12 +27,19 @@ import androidx.recyclerview.widget.RecyclerView;
 import ru.ringsplus.app.model.RingItem;
 import ru.ringsplus.app.model.StockCollection;
 
+import static ru.ringsplus.app.model.StockCollection.FIREBASE_CONNECTION_INFO;
+import static ru.ringsplus.app.model.StockCollection.FIREBASE_RINGS_PATH;
+
 public class StockActivity extends AppCompatActivity implements StockViewAdapter.DeleteClickListener {
 
     private StockViewAdapter mStockViewAdapter;
     private Toolbar mToolbar;
     private RecyclerView recyclerStock;
     private FloatingActionButton mAddRingItemButton;
+
+    private ProgressBar progressBar;
+
+    private DatabaseReference mRingsReference;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -60,10 +71,46 @@ public class StockActivity extends AppCompatActivity implements StockViewAdapter
         recyclerStock = findViewById(R.id.stockList);
         recyclerStock.setLayoutManager(new LinearLayoutManager(this));
 
+        progressBar = (ProgressBar) findViewById(R.id.progress_bar);
+
+        DatabaseReference connectedRef = FirebaseDatabase.getInstance().getReference(FIREBASE_CONNECTION_INFO);
+        connectedRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                boolean connected = snapshot.getValue(Boolean.class);
+                if (connected) {
+                    showProgressBar(false);
+                } else {
+                    showProgressBar(true);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        mRingsReference = FirebaseDatabase.getInstance().getReference(FIREBASE_RINGS_PATH);
+        mRingsReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                StockCollection.getInstance().onRingsCollectionDataChange(dataSnapshot);
+
+                mStockViewAdapter.notifyDataSetChanged();
+
+                showProgressBar(false);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                showProgressBar(false);
+                Toast.makeText(getBaseContext(), error.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+
         mAddRingItemButton = findViewById(R.id.add_ring_item);
         mAddRingItemButton.setOnClickListener(view -> {
-            final String[] addRingName = new String[1];
-
             AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
             dialogBuilder.setTitle(R.string.add_item_dialog_title);
 
@@ -72,10 +119,23 @@ public class StockActivity extends AppCompatActivity implements StockViewAdapter
             dialogBuilder.setView(inputEdit);
 
             dialogBuilder.setPositiveButton(R.string.add_dialog_ok, (dialog, which) -> {
-                addRingName[0] = inputEdit.getText().toString();
+                String addRingName = inputEdit.getText().toString().trim();
 
-                AddRingItemTask addItemTask = new AddRingItemTask(this);
-                addItemTask.execute(addRingName[0]);
+                RingItem addRingItem = new RingItem(UUID.randomUUID().toString(), addRingName);
+
+                showProgressBar(true);
+
+                mRingsReference.child(addRingItem.getId()).setValue(addRingItem, (error, ref) -> {
+                    if (error == null) {
+                        showProgressBar(false);
+
+                        String mStatusMsg = String.format(getString(R.string.add_item_ballon), addRingItem.getName());
+
+                        Toast.makeText(getBaseContext(), mStatusMsg, Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getBaseContext(), error.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
             });
 
             dialogBuilder.setNegativeButton(R.string.add_dialog_cancel, (dialog, which) -> dialog.cancel());
@@ -88,8 +148,19 @@ public class StockActivity extends AppCompatActivity implements StockViewAdapter
     public void onDeleteButtonClick(View view, int position) {
         RingItem mDeleteRingItem = mStockViewAdapter.getItem(position);
 
-        DeleteRingItemTask deleteItemTask = new DeleteRingItemTask(this);
-        deleteItemTask.execute(mDeleteRingItem);
+        showProgressBar(true);
+
+        mRingsReference.child(mDeleteRingItem.getId()).removeValue((error, ref) -> {
+            if (error == null) {
+                showProgressBar(false);
+
+                String mStatusMsg = String.format(getString(R.string.delete_item_ballon), mDeleteRingItem.getName());
+
+                Toast.makeText(getBaseContext(), mStatusMsg, Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getBaseContext(), error.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     @Override
@@ -101,111 +172,18 @@ public class StockActivity extends AppCompatActivity implements StockViewAdapter
         recyclerStock.setAdapter(mStockViewAdapter);
     }
 
-    class DeleteRingItemTask extends AsyncTask<RingItem, Void, String> {
+    private void showProgressBar(Boolean visible) {
 
-        private ProgressDialog dialog;
-        private Activity mParentActivity;
-
-        public DeleteRingItemTask(StockActivity activity) {
-            mParentActivity = activity;
-
-            dialog = new ProgressDialog(activity);
+        if (visible) {
+            progressBar.setVisibility(View.VISIBLE);
+            recyclerStock.setVisibility(View.GONE);
+            mAddRingItemButton.setVisibility(View.GONE);
+        } else {
+            progressBar.setVisibility(View.GONE);
+            recyclerStock.setVisibility(View.VISIBLE);
+            mAddRingItemButton.setVisibility(View.VISIBLE);
         }
 
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-
-            dialog.setMessage(getString(R.string.delete_item_wait));
-            dialog.show();
-        }
-
-        @Override
-        protected String doInBackground(RingItem... ringItems) {
-            try {
-                TimeUnit.SECONDS.sleep(1);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            String mStatusMsg =  String.format(getString(R.string.delete_item_ballon), ringItems[0].getName());
-
-            try {
-                StockCollection.getInstance().getRingItems().remove(ringItems[0]);
-            } catch (Exception e) {
-                mStatusMsg = String.format(getString(R.string.delete_item_err), e.getMessage());
-            }
-
-            return mStatusMsg;
-        }
-
-        @Override
-        protected void onPostExecute(String statusMsg) {
-            super.onPostExecute(statusMsg);
-
-            if (dialog.isShowing()) {
-                dialog.dismiss();
-            }
-
-            mStockViewAdapter.notifyDataSetChanged();
-
-            Toast.makeText(mParentActivity, statusMsg, Toast.LENGTH_SHORT).show();
-        }
     }
-
-    class AddRingItemTask extends AsyncTask<String, Void, String> {
-
-        private ProgressDialog dialog;
-        private Activity mParentActivity;
-
-        public AddRingItemTask(StockActivity activity) {
-            mParentActivity = activity;
-
-            dialog = new ProgressDialog(activity);
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-
-            dialog.setMessage(getString(R.string.add_item_wait));
-            dialog.show();
-        }
-
-        @Override
-        protected String doInBackground(String... ringNames) {
-            try {
-                TimeUnit.SECONDS.sleep(1);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            String mStatusMsg =  String.format(getString(R.string.add_item_ballon), ringNames[0]);
-
-            try {
-                StockCollection.getInstance().getRingItems().add(new RingItem(ringNames[0]));
-            } catch (Exception e) {
-                mStatusMsg = String.format(getString(R.string.add_item_err), e.getMessage());
-            }
-
-            return mStatusMsg;
-        }
-
-        @Override
-        protected void onPostExecute(String statusMsg) {
-            super.onPostExecute(statusMsg);
-
-            if (dialog.isShowing()) {
-                dialog.dismiss();
-            }
-
-            mStockViewAdapter.notifyItemInserted(StockCollection.getInstance().getRingItems().size());
-
-            recyclerStock.scrollToPosition(mStockViewAdapter.getItemCount() - 1);
-
-            Toast.makeText(mParentActivity, statusMsg, Toast.LENGTH_SHORT).show();
-        }
-    }
-
 
 }
