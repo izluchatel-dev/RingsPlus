@@ -19,7 +19,7 @@
             android:name=".OrderListActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".StockActivity"
+            android:name=".RingsActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".PropertiesActivity"

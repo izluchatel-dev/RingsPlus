@@ -3,11 +3,13 @@ package ru.ringsplus.app.utils;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
+import android.widget.TextView;
 
 import com.applandeo.materialcalendarview.CalendarUtils;
 
 import androidx.core.content.ContextCompat;
 import ru.ringsplus.app.R;
+import ru.ringsplus.app.model.DayItem;
 
 public class DrawableUtils {
 
@@ -31,6 +33,12 @@ public class DrawableUtils {
     }
 
     private DrawableUtils() {
+    }
+
+    public static void updateDayTitle(DayItem dayItem, TextView textView) {
+        if (dayItem != null) {
+            textView.setText(String.format("%d.%d.%d", dayItem.getDay(), dayItem.getMonth(), dayItem.getYear()));
+        }
     }
 
 }

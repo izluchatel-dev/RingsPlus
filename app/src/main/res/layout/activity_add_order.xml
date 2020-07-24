@@ -27,10 +27,17 @@
         android:layout_margin="8dp"
         android:stateListAnimator="@null">
 
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/progress_bar"
+            android:layout_centerInParent="true"/>
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/allRingsList"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            android:visibility="gone"/>
 
     </RelativeLayout>
 

@@ -10,7 +10,6 @@ public class AppOptions {
 
     private final String PREFERENCE_FILE_NAME = "RING_PREFERENCES";
     private final String USER_NAME = "USER_NAME";
-    private final String AUTO_REFRESH = "AUTO_REFRESH";
     private final String RECEIVE_NOTIFY = "RECEIVE_NOTIFICATION";
 
     private AppOptions() {};
@@ -37,19 +36,6 @@ public class AppOptions {
             editor.putString(USER_NAME, userName);
         } finally {
            editor.apply();
-        }
-    }
-
-    public Boolean getAutoRefresh(Context context) {
-        return getPreferences(context).getBoolean(AUTO_REFRESH, true);
-    }
-
-    public void setAutoRefresh(Context context, Boolean autoRefresh) {
-        Editor editor = getPreferences(context).edit();
-        try {
-            editor.putBoolean(AUTO_REFRESH, autoRefresh);
-        } finally {
-            editor.apply();
         }
     }
 

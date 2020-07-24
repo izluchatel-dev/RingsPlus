@@ -21,7 +21,6 @@ public class UserActivity extends AppCompatActivity {
 
     private EditText mUserNameEdit;
     private Button mSaveButton;
-    private Toolbar mToolbar;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -43,8 +42,8 @@ public class UserActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user);
 
-        mToolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(mToolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);

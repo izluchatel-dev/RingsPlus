@@ -16,7 +16,7 @@ public class SummaViewAdapter extends RecyclerView.Adapter<SummaViewAdapter.View
     private List<RingItem> mRingItems;
     private LayoutInflater mInflater;;
 
-    SummaViewAdapter(Context context, List<RingItem> data) {
+    public SummaViewAdapter(Context context, List<RingItem> data) {
         this.mInflater = LayoutInflater.from(context);
         this.mRingItems = data;
     }

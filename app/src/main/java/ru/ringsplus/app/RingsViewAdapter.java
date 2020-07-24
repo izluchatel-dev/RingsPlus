@@ -12,20 +12,20 @@ import java.util.List;
 import androidx.recyclerview.widget.RecyclerView;
 import ru.ringsplus.app.model.RingItem;
 
-public class StockViewAdapter extends RecyclerView.Adapter<StockViewAdapter.ViewHolder> {
+public class RingsViewAdapter extends RecyclerView.Adapter<RingsViewAdapter.ViewHolder> {
 
     private List<RingItem> mRingItems;
     private LayoutInflater mInflater;
     private DeleteClickListener mDeleteClickListener;
 
-    StockViewAdapter(Context context, List<RingItem> data) {
+    public RingsViewAdapter(Context context, List<RingItem> data) {
         this.mInflater = LayoutInflater.from(context);
         this.mRingItems = data;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = mInflater.inflate(R.layout.stock_recycler_item, parent, false);
+        View view = mInflater.inflate(R.layout.rings_recycler_item, parent, false);
         return new ViewHolder(view);
     }
 
@@ -65,7 +65,7 @@ public class StockViewAdapter extends RecyclerView.Adapter<StockViewAdapter.View
         return mRingItems.get(id);
     }
 
-    void setDeleteClickListener(DeleteClickListener itemClickListener) {
+    public void setDeleteClickListener(DeleteClickListener itemClickListener) {
         this.mDeleteClickListener = itemClickListener;
     }
 

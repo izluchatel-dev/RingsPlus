@@ -1,17 +1,15 @@
 package ru.ringsplus.app;
 
-import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import java.text.Format;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -21,15 +19,18 @@ import ru.ringsplus.app.model.DayItem;
 import ru.ringsplus.app.model.DayStatus;
 import ru.ringsplus.app.model.OrderItem;
 import ru.ringsplus.app.model.StockCollection;
+import ru.ringsplus.app.utils.CalendarUtils;
+import ru.ringsplus.app.utils.DrawableUtils;
 
 import static ru.ringsplus.app.model.DayStatus.CloseDay;
 import static ru.ringsplus.app.model.DayStatus.OpenDay;
+import static ru.ringsplus.app.utils.CalendarUtils.PUT_PARAM_DAY;
+import static ru.ringsplus.app.utils.CalendarUtils.PUT_PARAM_MONTH;
+import static ru.ringsplus.app.utils.CalendarUtils.PUT_PARAM_YEAR;
+import static ru.ringsplus.app.utils.CalendarUtils.getDayItemFromIntent;
 
 public class OrderListActivity extends AppCompatActivity implements OrderListViewAdapter.OrderClickListener, OrderListViewAdapter.OrderDeleteClickListener {
 
-    public static final String PUT_PARAM_DAY = "day";
-    public static final String PUT_PARAM_MONTH = "month";
-    public static final String PUT_PARAM_YEAR = "year";
     public static final String PUT_EDIT_ORDER_TITLE = "editOrderTitle";
     public static final String PUT_EDIT_ORDER_POSITION = "editOrderPosition";
 
@@ -38,8 +39,6 @@ public class OrderListActivity extends AppCompatActivity implements OrderListVie
 
     private DayItem mDayItem;
 
-    private Toolbar mToolbar;
-    private TextView mDayTitle;
     private MenuItem dayStatusMenuItem;
     private FloatingActionButton mAddOrderButton;
 
@@ -84,16 +83,16 @@ public class OrderListActivity extends AppCompatActivity implements OrderListVie
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_list);
 
-        mDayItem = getDayItemFromIntent();
-
-        mToolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(mToolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
-        mDayTitle = findViewById(R.id.day_title);
+        mDayItem = getDayItemFromIntent(getIntent());
+        DrawableUtils.updateDayTitle(mDayItem, findViewById(R.id.day_title));
+
         mAddOrderButton = findViewById(R.id.add_order);
 
         recyclerOrderList = findViewById(R.id.orderList);
@@ -106,28 +105,6 @@ public class OrderListActivity extends AppCompatActivity implements OrderListVie
             addOrderIntent.putExtra(PUT_PARAM_YEAR, mDayItem.getYear());
             startActivityForResult(addOrderIntent, ADD_ORDER_REQUEST_ID);
         });
-    }
-
-    private DayItem getDayItemFromIntent() {
-        DayItem resultDayItem = null;
-
-        int year = getIntent().getIntExtra(PUT_PARAM_YEAR, 0);
-        int month = getIntent().getIntExtra(PUT_PARAM_MONTH, 0);
-        int day = getIntent().getIntExtra(PUT_PARAM_DAY, 0);
-
-        for (DayItem nextDayItem: StockCollection.getInstance().getDayCollection()) {
-            if ((nextDayItem.getDay() == day) &&
-                    (nextDayItem.getMonth() == month) &&
-                    (nextDayItem.getYear() == year)) {
-                resultDayItem = nextDayItem;
-                break;
-            }
-        }
-
-        if (resultDayItem == null) {
-            resultDayItem = new DayItem(year, month, day);
-        }
-        return resultDayItem;
     }
 
     private void checkStatusDay() {
@@ -149,14 +126,18 @@ public class OrderListActivity extends AppCompatActivity implements OrderListVie
     }
 
     private void setStatusDay(DayStatus dayStatus) {
-        SetStatusDayTask setStatusDayTask = new SetStatusDayTask(this);
-        setStatusDayTask.execute(dayStatus);
-    }
+        mDayItem.setDayStatus(dayStatus);
 
-    private void updateDayTitle() {
-        if (mDayItem != null) {
-            mDayTitle.setText(String.format("%d.%d.%d", mDayItem.getDay(), mDayItem.getMonth(), mDayItem.getYear()));
+        String mStatusMsg = "";
+        if (dayStatus.equals(OpenDay)) {
+            mStatusMsg =  getString(R.string.day_status_change_open);
+        } else if (dayStatus.equals(CloseDay)) {
+            mStatusMsg =  getString(R.string.day_status_change_close);
         }
+
+        checkStatusDay();
+
+        Toast.makeText(this, mStatusMsg, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -167,16 +148,23 @@ public class OrderListActivity extends AppCompatActivity implements OrderListVie
         mOrderListViewAdapter.setOrderDeleteClickListener(this);
         mOrderListViewAdapter.setOrderClickListener(this);
         recyclerOrderList.setAdapter(mOrderListViewAdapter);
-
-        updateDayTitle();
     }
 
     @Override
     public void onDeleteButtonClick(View view, int position) {
         OrderItem mDeleteOrderItem = mOrderListViewAdapter.getItem(position);
 
-        DeleteOrderItemTask deleteOrderItemTask = new DeleteOrderItemTask(this);
-        deleteOrderItemTask.execute(mDeleteOrderItem);
+        String mStatusMsg = String.format(getString(R.string.delete_order_item_ballon), mDeleteOrderItem.getTitle());
+
+        mDayItem.getOrderItemList().remove(mDeleteOrderItem);
+
+        if (mDayItem.getOrderItemList().isEmpty()) {
+            StockCollection.getInstance().getDayCollection().remove(mDayItem);
+        }
+
+        Toast.makeText(this, mStatusMsg, Toast.LENGTH_SHORT).show();
+
+        mOrderListViewAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -191,108 +179,6 @@ public class OrderListActivity extends AppCompatActivity implements OrderListVie
         editOrderIntent.putExtra(PUT_EDIT_ORDER_POSITION, position);
 
         startActivityForResult(editOrderIntent, EDIT_ORDER_REQUEST_ID);
-    }
-
-    class SetStatusDayTask extends AsyncTask<DayStatus, Void, String> {
-
-        private ProgressDialog dialog;
-        private Activity mParentActivity;
-
-        public SetStatusDayTask(OrderListActivity activity) {
-            mParentActivity = activity;
-
-            dialog = new ProgressDialog(activity);
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-
-            dialog.setMessage(getString(R.string.set_day_status));
-            dialog.show();
-        }
-
-        @Override
-        protected String doInBackground(DayStatus... dayStatuses) {
-            String mStatusMsg = "";
-            if (dayStatuses[0].equals(OpenDay)) {
-                mStatusMsg =  getString(R.string.day_status_change_open);
-            } else if (dayStatuses[0].equals(CloseDay)) {
-                mStatusMsg =  getString(R.string.day_status_change_close);
-            }
-
-            try {
-                mDayItem.setDayStatus(dayStatuses[0]);
-            } catch (Exception e) {
-                mStatusMsg = String.format(getString(R.string.day_status_err), e.getMessage());
-            }
-
-            return mStatusMsg;
-        }
-
-        @Override
-        protected void onPostExecute(String statusMsg) {
-            super.onPostExecute(statusMsg);
-
-            if (dialog.isShowing()) {
-                dialog.dismiss();
-            }
-
-            checkStatusDay();
-
-            Toast.makeText(mParentActivity, statusMsg, Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    class DeleteOrderItemTask extends AsyncTask<OrderItem, Void, String> {
-
-        private ProgressDialog dialog;
-        private Activity mParentActivity;
-
-        public DeleteOrderItemTask(OrderListActivity activity) {
-            mParentActivity = activity;
-
-            dialog = new ProgressDialog(activity);
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-
-            dialog.setMessage(getString(R.string.delete_order_item_wait));
-            dialog.show();
-        }
-
-        @Override
-        protected String doInBackground(OrderItem... orderItems) {
-
-            String mStatusMsg =  String.format(getString(R.string.delete_order_item_ballon), orderItems[0].getTitle());
-
-            try {
-                mDayItem.getOrderItemList().remove(orderItems[0]);
-
-                if (mDayItem.getOrderItemList().isEmpty()) {
-                    StockCollection.getInstance().getDayCollection().remove(mDayItem);
-                }
-            } catch (Exception e) {
-                mStatusMsg = String.format(getString(R.string.delete_order_item_err), e.getMessage());
-            }
-
-            return mStatusMsg;
-        }
-
-        @Override
-        protected void onPostExecute(String statusMsg) {
-            super.onPostExecute(statusMsg);
-
-            if (dialog.isShowing()) {
-                dialog.dismiss();
-            }
-
-            mOrderListViewAdapter.notifyDataSetChanged();
-
-            Toast.makeText(mParentActivity, statusMsg, Toast.LENGTH_SHORT).show();
-        }
     }
 
     @Override
@@ -311,7 +197,7 @@ public class OrderListActivity extends AppCompatActivity implements OrderListVie
                 String changeMessage = String.format(getString(R.string.order_item_add_success_fmt), orderTitle);
 
                if (requestCode == ADD_ORDER_REQUEST_ID) {
-                   mDayItem = getDayItemFromIntent();
+                   mDayItem = CalendarUtils.getDayItemFromIntent(getIntent());
 
                    mOrderListViewAdapter.notifyItemInserted(mDayItem.getOrderItemList().size());
 

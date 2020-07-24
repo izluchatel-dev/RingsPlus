@@ -19,7 +19,7 @@ public class AddOrderRingsViewAdapter extends RecyclerView.Adapter<AddOrderRings
     private PlusClickListener mPlusClickListener;
     private MinusClickListener mMinusClickListener;
 
-    AddOrderRingsViewAdapter(Context context, List<RingItem> data) {
+    public AddOrderRingsViewAdapter(Context context, List<RingItem> data) {
         this.mInflater = LayoutInflater.from(context);
         this.mRingItems = data;
     }
@@ -73,11 +73,11 @@ public class AddOrderRingsViewAdapter extends RecyclerView.Adapter<AddOrderRings
         return mRingItems.get(id);
     }
 
-    void setPlusClickListener(PlusClickListener plusClickListener) {
+    public void setPlusClickListener(PlusClickListener plusClickListener) {
         this.mPlusClickListener = plusClickListener;
     }
 
-    void setMinusClickListener(MinusClickListener minusClickListener) {
+    public void setMinusClickListener(MinusClickListener minusClickListener) {
         this.mMinusClickListener = minusClickListener;
     }
 

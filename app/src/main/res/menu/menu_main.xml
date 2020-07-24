@@ -8,18 +8,13 @@
         android:icon="@drawable/change_user"
         android:title="@string/user_hint"/>
     <item
-        android:id="@+id/action_stock"
-        app:showAsAction="always"
-        android:icon="@drawable/stock"
-        android:title="@string/stock_hint"/>
-    <item
         android:id="@+id/action_options"
         app:showAsAction="always"
         android:icon="@drawable/options"
         android:title="@string/options_hint"/>
     <item
-        android:id="@+id/action_refresh"
+        android:id="@+id/action_stock"
         app:showAsAction="always"
-        android:icon="@drawable/refresh"
-        android:title="@string/refresh_hint"/>
+        android:icon="@drawable/stock"
+        android:title="@string/stock_hint"/>
 </menu>
