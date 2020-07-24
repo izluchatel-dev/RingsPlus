@@ -95,8 +95,6 @@ public class AddOrderActivity extends AppCompatActivity {
             }
         });
 
-        fireBaseOrderRings = new FireBaseOrderRings(recyclerRingsList);
-
         mOrderTitleName = findViewById(R.id.titleName);
         mOrderTitleName.addTextChangedListener(new TextWatcher() {
             @Override
@@ -116,6 +114,7 @@ public class AddOrderActivity extends AppCompatActivity {
         });
 
         mOrderDetails = findViewById(R.id.detailsText);
+
         mSaveButton = findViewById(R.id.orderItemSave);
         mSaveButton.setOnClickListener( view -> {
             String orderTitle = String.valueOf(mOrderTitleName.getText()).trim();
@@ -133,9 +132,11 @@ public class AddOrderActivity extends AppCompatActivity {
                         editOrderItem.setAuthor(orderAuthor);
                         editOrderItem.getRingOrderItemList().clear();
 
-                        for (RingItem nextRingItem : fireBaseOrderRings.getRingItems()) {
-                            if (nextRingItem.getCount() > 0) {
-                                editOrderItem.getRingOrderItemList().add(new RingOrderItem(nextRingItem.getName(), nextRingItem.getCount()));
+                        if (fireBaseOrderRings.getRingItems() != null) {
+                            for (RingItem nextRingItem : fireBaseOrderRings.getRingItems()) {
+                                if (nextRingItem.getCount() > 0) {
+                                    editOrderItem.getRingOrderItemList().add(new RingOrderItem(nextRingItem.getName(), nextRingItem.getCount()));
+                                }
                             }
                         }
 
@@ -154,9 +155,11 @@ public class AddOrderActivity extends AppCompatActivity {
                 if (!hasOrderItemInCurrentDay(orderTitle)) {
                     OrderItem addOrderItem = new OrderItem(orderTitle, orderDetails, orderAuthor);
 
-                    for (RingItem nextRingItem : fireBaseOrderRings.getRingItems()) {
-                        if (nextRingItem.getCount() > 0) {
-                            addOrderItem.getRingOrderItemList().add(new RingOrderItem(nextRingItem.getName(), nextRingItem.getCount()));
+                    if (fireBaseOrderRings.getRingItems() != null) {
+                        for (RingItem nextRingItem : fireBaseOrderRings.getRingItems()) {
+                            if (nextRingItem.getCount() > 0) {
+                                addOrderItem.getRingOrderItemList().add(new RingOrderItem(nextRingItem.getName(), nextRingItem.getCount()));
+                            }
                         }
                     }
 
@@ -181,6 +184,8 @@ public class AddOrderActivity extends AppCompatActivity {
         });
 
         fillOrderItemByOrderTitle();
+
+        fireBaseOrderRings = new FireBaseOrderRings(recyclerRingsList, mDayItem, editOrderTitle);
     }
 
     private void fillOrderItemByOrderTitle() {
@@ -192,16 +197,6 @@ public class AddOrderActivity extends AppCompatActivity {
                 if (nextOrderItem.getTitle().equals(editOrderTitle)) {
                     mOrderTitleName.setText(nextOrderItem.getTitle());
                     mOrderDetails.setText(nextOrderItem.getDetails());
-
-                    for (RingItem nextRingItem : fireBaseOrderRings.getRingItems()) {
-                        for (RingOrderItem ringOrderItem: nextOrderItem.getRingOrderItemList()) {
-                            if (nextRingItem.getName().equals(ringOrderItem.getRingName())) {
-                                nextRingItem.setCount(ringOrderItem.getCount());
-
-                                break;
-                            }
-                        }
-                    }
 
                     break;
                 }

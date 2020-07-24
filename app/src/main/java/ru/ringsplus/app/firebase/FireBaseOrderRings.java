@@ -16,7 +16,13 @@ import java.util.List;
 import androidx.recyclerview.widget.RecyclerView;
 import ru.ringsplus.app.AddOrderRingsViewAdapter;
 import ru.ringsplus.app.RingsViewAdapter;
+import ru.ringsplus.app.model.DayItem;
+import ru.ringsplus.app.model.OrderItem;
 import ru.ringsplus.app.model.RingItem;
+import ru.ringsplus.app.model.RingOrderItem;
+
+import static ru.ringsplus.app.OrderListActivity.PUT_EDIT_ORDER_POSITION;
+import static ru.ringsplus.app.OrderListActivity.PUT_EDIT_ORDER_TITLE;
 
 public class FireBaseOrderRings {
 
@@ -24,7 +30,7 @@ public class FireBaseOrderRings {
 
     private List<RingItem> ringItems;
 
-    public FireBaseOrderRings(RecyclerView recyclerView) {
+    public FireBaseOrderRings(RecyclerView recyclerView, DayItem dayItem, String editOrderItem) {
         DatabaseReference ringsReference = FirebaseDatabase.getInstance().getReference(FIREBASE_RINGS_PATH);
 
         ringsReference.addValueEventListener(new ValueEventListener() {
@@ -41,6 +47,22 @@ public class FireBaseOrderRings {
 
                 Comparator<RingItem> compareRingItem = (RingItem o1, RingItem o2) -> o1.getName().compareTo( o2.getName() );
                 Collections.sort(ringItems, compareRingItem);
+
+                if ((editOrderItem != null) && (!editOrderItem.isEmpty())) {
+                    for (OrderItem nextOrderItem: dayItem.getOrderItemList()) {
+                        if (nextOrderItem.getTitle().equals(editOrderItem)) {
+                            for (RingItem nextRingItem : ringItems) {
+                                for (RingOrderItem ringOrderItem : nextOrderItem.getRingOrderItemList()) {
+                                    if (nextRingItem.getName().equals(ringOrderItem.getRingName())) {
+                                        nextRingItem.setCount(ringOrderItem.getCount());
+
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
 
                 AddOrderRingsViewAdapter mAddOrderRingsViewAdapter = new AddOrderRingsViewAdapter(recyclerView.getContext(), ringItems);
 
