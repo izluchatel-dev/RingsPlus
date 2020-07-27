@@ -11,6 +11,7 @@ import android.widget.ProgressBar;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.text.Format;
 import java.util.UUID;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -102,10 +103,19 @@ public class RingsActivity extends AppCompatActivity implements RingsViewAdapter
     @Override
     public void onDeleteButtonClick(View view, int position) {
         RingsViewAdapter ringsViewAdapter = (RingsViewAdapter) mRingsRecyclerView.getAdapter();
-
         RingItem mDeleteRingItem = ringsViewAdapter.getItem(position);
 
-        mFireBaseRings.deleteRingItem(this, mDeleteRingItem);
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+        String removeQuestionMsg = String.format(getString(R.string.remove_item_dialog_title), mDeleteRingItem.getName());
+        dialogBuilder.setTitle(removeQuestionMsg);
+
+        dialogBuilder.setPositiveButton(R.string.remove_item_dialog_yes, (dialog, which) -> {
+            mFireBaseRings.deleteRingItem(this, mDeleteRingItem);
+        });
+
+        dialogBuilder.setNegativeButton(R.string.remove_item_dialog_cancel, (dialog, which) -> dialog.cancel());
+
+        dialogBuilder.show();
     }
 
 }

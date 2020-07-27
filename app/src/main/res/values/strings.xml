@@ -53,6 +53,10 @@
     <string name="add_item_dialog_title">Введите имя нового элемента и нажмите ОК</string>
     <string name="summa_rings_order_postfix">%d шт.</string>
 
+    <string name="remove_item_dialog_title">Удалить элемент %s со склада?</string>
+    <string name="remove_item_dialog_yes">Да</string>
+    <string name="remove_item_dialog_cancel">Отмена</string>
+
     <string name="material_calendar_monday">Пн</string>
     <string name="material_calendar_tuesday">Вт</string>
     <string name="material_calendar_wednesday">Ср</string>
