@@ -60,17 +60,19 @@ public class SummaActivity extends AppCompatActivity {
         recyclerSumma = findViewById(R.id.summaRingsList);
         recyclerSumma.setLayoutManager(new LinearLayoutManager(this));
 
-        FireBaseConnnection.setConnectedChecker(visible -> {
-            if (visible) {
-                progressBar.setVisibility(View.VISIBLE);
-                recyclerSumma.setVisibility(View.GONE);
-            } else {
-                progressBar.setVisibility(View.GONE);
-                recyclerSumma.setVisibility(View.VISIBLE);
-            }
-        });
+        FireBaseConnnection.setConnectedChecker(this::onShowProgressBar, false);
 
         FireBaseRingsSumma fireBaseRingsSumma = new FireBaseRingsSumma(recyclerSumma, mDayItem);
+    }
+
+    private void onShowProgressBar(Boolean visible) {
+        if (visible) {
+            progressBar.setVisibility(View.VISIBLE);
+            recyclerSumma.setVisibility(View.GONE);
+        } else {
+            progressBar.setVisibility(View.GONE);
+            recyclerSumma.setVisibility(View.VISIBLE);
+        }
     }
 
 }

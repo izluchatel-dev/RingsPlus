@@ -12,26 +12,42 @@
         android:id="@+id/toolbar"
         style="@style/Toolbar"/>
 
-    <com.applandeo.materialcalendarview.CalendarView
-        android:id="@+id/calendarView"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        app:type="one_day_picker"
-        app:eventsEnabled="true"
-        app:headerColor="@color/colorPrimary"
-        app:selectionColor="@color/colorPrimary" />
+        android:layout_weight="0.6"
+        android:orientation="vertical"
+        android:stateListAnimator="@null">
 
-    <Button
-        android:id="@+id/setDateButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:layout_gravity="center"
-        android:layout_margin="16dp"
-        android:textColor="#FFFFFF"
-        android:background="@color/colorPrimary"
-        android:text="@string/detail_button" />
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/progress_bar"
+            android:layout_centerInParent="true"/>
+
+        <com.applandeo.materialcalendarview.CalendarView
+            android:id="@+id/calendarView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:type="one_day_picker"
+            app:eventsEnabled="true"
+            app:headerColor="@color/colorPrimary"
+            app:selectionColor="@color/colorPrimary" />
+
+        <Button
+            android:id="@+id/setDateButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:layout_centerInParent="true"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="16dp"
+            android:textColor="#FFFFFF"
+            android:background="@color/colorPrimary"
+            android:text="@string/detail_button" />
+
+    </RelativeLayout>
 
 </LinearLayout>

@@ -11,7 +11,6 @@ import android.widget.ProgressBar;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.text.Format;
 import java.util.UUID;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -61,19 +60,9 @@ public class RingsActivity extends AppCompatActivity implements RingsViewAdapter
         mRingsRecyclerView = findViewById(R.id.stockList);
         mRingsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        progressBar = (ProgressBar) findViewById(R.id.progress_bar);
+        progressBar =  findViewById(R.id.progress_bar);
 
-        FireBaseConnnection.setConnectedChecker(visible -> {
-            if (visible) {
-                progressBar.setVisibility(View.VISIBLE);
-                mRingsRecyclerView.setVisibility(View.GONE);
-                mAddRingItemButton.setVisibility(View.GONE);
-            } else {
-                progressBar.setVisibility(View.GONE);
-                mRingsRecyclerView.setVisibility(View.VISIBLE);
-                mAddRingItemButton.setVisibility(View.VISIBLE);
-            }
-        });
+        FireBaseConnnection.setConnectedChecker(this::onShowProgressBar, false);
 
         mFireBaseRings = new FireBaseRings(mRingsRecyclerView, this);
 
@@ -98,6 +87,18 @@ public class RingsActivity extends AppCompatActivity implements RingsViewAdapter
 
             dialogBuilder.show();
         });
+    }
+
+    private void onShowProgressBar(Boolean visible) {
+        if (visible) {
+            progressBar.setVisibility(View.VISIBLE);
+            mRingsRecyclerView.setVisibility(View.GONE);
+            mAddRingItemButton.setVisibility(View.GONE);
+        } else {
+            progressBar.setVisibility(View.GONE);
+            mRingsRecyclerView.setVisibility(View.VISIBLE);
+            mAddRingItemButton.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override

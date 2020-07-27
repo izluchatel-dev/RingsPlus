@@ -4,11 +4,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.applandeo.materialcalendarview.CalendarView;
 import com.applandeo.materialcalendarview.EventDay;
+import com.applandeo.materialcalendarview.listeners.OnCalendarPageChangeListener;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -16,6 +19,7 @@ import java.util.List;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import ru.ringsplus.app.firebase.FireBaseConnnection;
 import ru.ringsplus.app.model.DayItem;
 import ru.ringsplus.app.model.DayStatus;
 import ru.ringsplus.app.model.StockCollection;
@@ -29,6 +33,9 @@ import static ru.ringsplus.app.utils.CalendarUtils.PUT_PARAM_YEAR;
 public class MainActivity extends AppCompatActivity {
 
     private CalendarView calendarView;
+    private Button detailButton;
+
+    private ProgressBar progressBar;
 
     private static final int USER_PARAMS_REQUEST_ID = 1;
 
@@ -62,9 +69,19 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        calendarView = (CalendarView) findViewById(R.id.calendarView);
+        progressBar =  findViewById(R.id.progress_bar);
 
-        Button detailButton = (Button) findViewById(R.id.setDateButton);
+        calendarView = findViewById(R.id.calendarView);
+
+        calendarView.setOnPreviousPageChangeListener(() -> {
+            FireBaseConnnection.setConnectedChecker(this::onShowProgressBar, true);
+        });
+
+        calendarView.setOnForwardPageChangeListener(() -> {
+            FireBaseConnnection.setConnectedChecker(this::onShowProgressBar, true);
+        });
+
+        detailButton = findViewById(R.id.setDateButton);
         detailButton.setOnClickListener(v -> {
             int putDay = calendarView.getFirstSelectedDate().get(Calendar.DAY_OF_MONTH);
             int putMonth = calendarView.getFirstSelectedDate().get(Calendar.MONTH) + 1;
@@ -76,6 +93,20 @@ public class MainActivity extends AppCompatActivity {
             orderListIntent.putExtra(PUT_PARAM_YEAR, putYear);
             startActivity(orderListIntent);
         });
+
+        FireBaseConnnection.setConnectedChecker(this::onShowProgressBar, false);
+    }
+
+    private void onShowProgressBar(Boolean visible) {
+        if (visible) {
+            progressBar.setVisibility(View.VISIBLE);
+            calendarView.setVisibility(View.GONE);
+            detailButton.setVisibility(View.GONE);
+        } else {
+            progressBar.setVisibility(View.GONE);
+            calendarView.setVisibility(View.VISIBLE);
+            detailButton.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override

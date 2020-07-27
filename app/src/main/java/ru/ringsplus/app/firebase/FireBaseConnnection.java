@@ -12,8 +12,14 @@ public class FireBaseConnnection {
 
     public static final String FIREBASE_CONNECTION_INFO = ".info/connected";
 
-    public static void setConnectedChecker(WaitProgressBarInterface waitProgressBarInterface) {
+    public static void setConnectedChecker(WaitProgressBarInterface waitProgressBarInterface, Boolean reConnected) {
         DatabaseReference connectedRef = FirebaseDatabase.getInstance().getReference(FIREBASE_CONNECTION_INFO);
+
+        if (reConnected) {
+            connectedRef.getDatabase().goOffline();
+            connectedRef.getDatabase().goOnline();
+        }
+
         connectedRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {

@@ -85,15 +85,7 @@ public class AddOrderActivity extends AppCompatActivity {
 
         progressBar = (ProgressBar) findViewById(R.id.progress_bar);
 
-        FireBaseConnnection.setConnectedChecker(visible -> {
-            if (visible) {
-                progressBar.setVisibility(View.VISIBLE);
-                recyclerRingsList.setVisibility(View.GONE);
-            } else {
-                progressBar.setVisibility(View.GONE);
-                recyclerRingsList.setVisibility(View.VISIBLE);
-            }
-        });
+        FireBaseConnnection.setConnectedChecker(this::onShowProgressBar, false);
 
         mOrderTitleName = findViewById(R.id.titleName);
         mOrderTitleName.addTextChangedListener(new TextWatcher() {
@@ -186,6 +178,16 @@ public class AddOrderActivity extends AppCompatActivity {
         fillOrderItemByOrderTitle();
 
         fireBaseOrderRings = new FireBaseOrderRings(recyclerRingsList, mDayItem, editOrderTitle);
+    }
+
+    private void onShowProgressBar(Boolean visible) {
+        if (visible) {
+            progressBar.setVisibility(View.VISIBLE);
+            recyclerRingsList.setVisibility(View.GONE);
+        } else {
+            progressBar.setVisibility(View.GONE);
+            recyclerRingsList.setVisibility(View.VISIBLE);
+        }
     }
 
     private void fillOrderItemByOrderTitle() {
