@@ -15,47 +15,73 @@ import java.util.List;
 
 import androidx.recyclerview.widget.RecyclerView;
 import ru.ringsplus.app.SummaViewAdapter;
-import ru.ringsplus.app.model.DayItem;
 import ru.ringsplus.app.model.OrderItem;
 import ru.ringsplus.app.model.RingItem;
 import ru.ringsplus.app.model.RingOrderItem;
 
+import static ru.ringsplus.app.firebase.FireBaseOrders.FIREBASE_ORDERS_PATH;
+import static ru.ringsplus.app.firebase.FireBaseRings.FIREBASE_RINGS_PATH;
+
 public class FireBaseRingsSumma {
 
-    public static final String FIREBASE_RINGS_PATH = "rings";
+    public FireBaseRingsSumma(RecyclerView recyclerView, int day, int month, int year) {
 
-    private DatabaseReference mRingsReference;
+        String pathMonthAndYear = String.valueOf(month) + String.valueOf(year);
 
-    public FireBaseRingsSumma(RecyclerView recyclerView, DayItem dayItem) {
-        mRingsReference = FirebaseDatabase.getInstance().getReference(FIREBASE_RINGS_PATH);
-        mRingsReference.addValueEventListener(new ValueEventListener() {
+        String orderFullPath = String.format(FIREBASE_ORDERS_PATH, pathMonthAndYear, String.valueOf(day));
+
+        DatabaseReference ringsReference = FirebaseDatabase.getInstance().getReference(FIREBASE_RINGS_PATH);
+        ringsReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                List<RingItem> ringItems = new ArrayList<RingItem>();
+                List<RingItem> ringItems = new ArrayList<>();
 
                 for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
                     RingItem nextRing = postSnapshot.getValue(RingItem.class);
 
-                    nextRing.setCount(0);
-
-                    for (OrderItem nextOrder: dayItem.getOrderItemList()) {
-                        for (RingOrderItem nextRingOrder: nextOrder.getRingOrderItemList()) {
-                            if (nextRing.getName().equals(nextRingOrder.getRingName())) {
-                                nextRing.setCount(nextRing.getCount() + nextRingOrder.getCount());
-                            }
-                        }
-                    }
-
-                    if (nextRing.getCount() > 0) {
+                    if (nextRing != null) {
+                        nextRing.setCount(0);
                         ringItems.add(nextRing);
                     }
                 }
 
-                Comparator<RingItem> compareRingItem = (RingItem o1, RingItem o2) -> o1.getName().compareTo( o2.getName() );
-                Collections.sort(ringItems, compareRingItem);
+                DatabaseReference mOrdersReference = FirebaseDatabase.getInstance().getReference(orderFullPath);
+                mOrdersReference.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
+                            OrderItem nextOrder = postSnapshot.getValue(OrderItem.class);
 
-                SummaViewAdapter mSummaViewAdapter = new SummaViewAdapter(recyclerView.getContext(), ringItems);
-                recyclerView.setAdapter(mSummaViewAdapter);
+                            if ((nextOrder != null) && (nextOrder.getRingOrderItemList() != null)) {
+                                for (RingOrderItem nextRingOrderItem: nextOrder.getRingOrderItemList()) {
+                                    for (RingItem nextRingItem: ringItems) {
+                                        if (nextRingItem.getName().equals(nextRingOrderItem.getRingName())) {
+                                            nextRingItem.setCount(nextRingItem.getCount() + nextRingOrderItem.getCount());
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        List<RingItem> finalRingItems = new ArrayList<>();
+                        for (RingItem nextRingItem: ringItems) {
+                            if (nextRingItem.getCount() > 0) {
+                                finalRingItems.add(nextRingItem);
+                            }
+                        }
+
+                        Comparator<RingItem> compareRingItem = (RingItem o1, RingItem o2) -> o1.getName().compareTo( o2.getName() );
+                        Collections.sort(finalRingItems, compareRingItem);
+
+                        SummaViewAdapter mSummaViewAdapter = new SummaViewAdapter(recyclerView.getContext(), finalRingItems);
+                        recyclerView.setAdapter(mSummaViewAdapter);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError error) {
+                        Toast.makeText(recyclerView.getContext(), error.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
             }
 
             @Override

@@ -10,21 +10,13 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.applandeo.materialcalendarview.CalendarView;
-import com.applandeo.materialcalendarview.EventDay;
-import com.applandeo.materialcalendarview.listeners.OnCalendarPageChangeListener;
 
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import ru.ringsplus.app.firebase.FireBaseCalendar;
 import ru.ringsplus.app.firebase.FireBaseConnnection;
-import ru.ringsplus.app.model.DayItem;
-import ru.ringsplus.app.model.DayStatus;
-import ru.ringsplus.app.model.StockCollection;
-import ru.ringsplus.app.utils.CalendarUtils;
-import ru.ringsplus.app.utils.DrawableUtils;
 
 import static ru.ringsplus.app.utils.CalendarUtils.PUT_PARAM_DAY;
 import static ru.ringsplus.app.utils.CalendarUtils.PUT_PARAM_MONTH;
@@ -36,6 +28,8 @@ public class MainActivity extends AppCompatActivity {
     private Button detailButton;
 
     private ProgressBar progressBar;
+
+    private FireBaseCalendar mFireBaseCalendar;
 
     private static final int USER_PARAMS_REQUEST_ID = 1;
 
@@ -74,11 +68,15 @@ public class MainActivity extends AppCompatActivity {
         calendarView = findViewById(R.id.calendarView);
 
         calendarView.setOnPreviousPageChangeListener(() -> {
+            mFireBaseCalendar.getCalendarReference().onDisconnect();
             FireBaseConnnection.setConnectedChecker(this::onShowProgressBar, true);
+            mFireBaseCalendar = new FireBaseCalendar(calendarView);
         });
 
         calendarView.setOnForwardPageChangeListener(() -> {
+            mFireBaseCalendar.getCalendarReference().onDisconnect();
             FireBaseConnnection.setConnectedChecker(this::onShowProgressBar, true);
+            mFireBaseCalendar = new FireBaseCalendar(calendarView);
         });
 
         detailButton = findViewById(R.id.setDateButton);
@@ -95,6 +93,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
         FireBaseConnnection.setConnectedChecker(this::onShowProgressBar, false);
+
+        mFireBaseCalendar = new FireBaseCalendar(calendarView);
     }
 
     private void onShowProgressBar(Boolean visible) {
@@ -109,31 +109,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        updateCalendarEvents();
-    }
-
-    public void updateCalendarEvents() {
-        List<EventDay> events = new ArrayList<>();
-
-        for (DayItem dayItem : StockCollection.getInstance().getDayCollection()) {
-
-            int year = dayItem.getYear();
-            int month = dayItem.getMonth();
-            int day = dayItem.getDay();
-
-            if (dayItem.getDayStatus().equals(DayStatus.OpenDay)) {
-                events.add(new EventDay(CalendarUtils.getCalendarByDate(year, month, day), DrawableUtils.getHasIconWithText((this))));
-            } else if (dayItem.getDayStatus().equals(DayStatus.CloseDay)) {
-                events.add(new EventDay(CalendarUtils.getCalendarByDate(year, month, day), DrawableUtils.getStopIconWithText((this))));
-            }
-        }
-
-        calendarView.setEvents(events);
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

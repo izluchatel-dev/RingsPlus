@@ -18,7 +18,7 @@
         android:textAlignment="center"
         android:textColor="@color/colorPrimary"
         android:textSize="12sp"
-        android:text="Общая сумма колец по всем заказам за"
+        android:text="@string/summa_title_of_day"
         android:layout_marginTop="8dp"/>
 
     <TextView

@@ -1,6 +1,5 @@
 package ru.ringsplus.app;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -10,24 +9,24 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.UUID;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import ru.ringsplus.app.firebase.FireBaseConnnection;
-import ru.ringsplus.app.firebase.FireBaseOrderRings;
+import ru.ringsplus.app.firebase.FireBaseOrdersEditor;
 import ru.ringsplus.app.model.AppOptions;
 import ru.ringsplus.app.model.DayItem;
 import ru.ringsplus.app.model.OrderItem;
 import ru.ringsplus.app.model.RingItem;
 import ru.ringsplus.app.model.RingOrderItem;
-import ru.ringsplus.app.model.StockCollection;
 import ru.ringsplus.app.utils.DrawableUtils;
 
-import static ru.ringsplus.app.OrderListActivity.PUT_EDIT_ORDER_POSITION;
-import static ru.ringsplus.app.OrderListActivity.PUT_EDIT_ORDER_TITLE;
+import static ru.ringsplus.app.OrderListActivity.PUT_EDIT_ORDER_ID;
 import static ru.ringsplus.app.utils.CalendarUtils.getDayItemFromIntent;
 
 public class AddOrderActivity extends AppCompatActivity {
@@ -41,12 +40,9 @@ public class AddOrderActivity extends AppCompatActivity {
 
     private DayItem mDayItem;
 
-    public String editOrderTitle = "";
-    public Integer editOrderPosition = 0;
-
     private ProgressBar progressBar;
 
-    FireBaseOrderRings fireBaseOrderRings;
+    FireBaseOrdersEditor mFireBaseOrdersEditor;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -77,15 +73,12 @@ public class AddOrderActivity extends AppCompatActivity {
         }
 
         mDayItem = getDayItemFromIntent(getIntent());
-
         DrawableUtils.updateDayTitle(mDayItem, findViewById(R.id.add_day_title));
 
         recyclerRingsList = findViewById(R.id.allRingsList);
         recyclerRingsList.setLayoutManager(new LinearLayoutManager(this));
 
-        progressBar = (ProgressBar) findViewById(R.id.progress_bar);
-
-        FireBaseConnnection.setConnectedChecker(this::onShowProgressBar, false);
+        progressBar = findViewById(R.id.progress_bar);
 
         mOrderTitleName = findViewById(R.id.titleName);
         mOrderTitleName.addTextChangedListener(new TextWatcher() {
@@ -113,96 +106,62 @@ public class AddOrderActivity extends AppCompatActivity {
             String orderDetails = String.valueOf(mOrderDetails.getText()).trim();
             String orderAuthor = AppOptions.getInstance().getUserName(this);
 
-            //Было редактирование
-            if ((editOrderTitle != null) && (!editOrderTitle.isEmpty())) {
-                if ((editOrderTitle.equals(orderTitle)) || (!hasOrderItemInCurrentDay(orderTitle))) {
-                    OrderItem editOrderItem = getCurrentEditOrderItemByTitle(editOrderTitle);
+            OrderItem editOrderItem = mFireBaseOrdersEditor.getEditOrderItem();
 
-                    if (editOrderItem != null) {
-                        editOrderItem.setTitle(orderTitle);
-                        editOrderItem.setDetails(orderDetails);
-                        editOrderItem.setAuthor(orderAuthor);
-                        editOrderItem.getRingOrderItemList().clear();
+            if (editOrderItem != null) {
+                editOrderItem.setTitle(orderTitle);
+                editOrderItem.setDetails(orderDetails);
+                editOrderItem.setAuthor(orderAuthor);
 
-                        if (fireBaseOrderRings.getRingItems() != null) {
-                            for (RingItem nextRingItem : fireBaseOrderRings.getRingItems()) {
-                                if (nextRingItem.getCount() > 0) {
-                                    editOrderItem.getRingOrderItemList().add(new RingOrderItem(nextRingItem.getName(), nextRingItem.getCount()));
-                                }
-                            }
-                        }
-
-                        Intent intent = new Intent();
-                        intent.putExtra(ORDER_TITLE_PUT, editOrderItem.getTitle());
-                        intent.putExtra(PUT_EDIT_ORDER_POSITION, editOrderPosition);
-                        setResult(RESULT_OK, intent);
-
-                        finish();
-
-                    }
-                } else {
-                    Toast.makeText(this, String.format(getString(R.string.add_order_item_exist_msg), orderTitle), Toast.LENGTH_SHORT).show();
+                if (editOrderItem.getRingOrderItemList() == null) {
+                    editOrderItem.setRingOrderItemList(new ArrayList<>());
                 }
-            } else { //Добавление
-                if (!hasOrderItemInCurrentDay(orderTitle)) {
-                    OrderItem addOrderItem = new OrderItem(orderTitle, orderDetails, orderAuthor);
+                editOrderItem.getRingOrderItemList().clear();
+            } else {
+                editOrderItem = new OrderItem(UUID.randomUUID().toString(), orderTitle, orderDetails, orderAuthor);
+            }
 
-                    if (fireBaseOrderRings.getRingItems() != null) {
-                        for (RingItem nextRingItem : fireBaseOrderRings.getRingItems()) {
-                            if (nextRingItem.getCount() > 0) {
-                                addOrderItem.getRingOrderItemList().add(new RingOrderItem(nextRingItem.getName(), nextRingItem.getCount()));
-                            }
+            if (editOrderItem != null) {
+                if (mFireBaseOrdersEditor.getRingItems() != null) {
+                    for (RingItem nextRingItem : mFireBaseOrdersEditor.getRingItems()) {
+                        if (nextRingItem.getCount() > 0) {
+                            editOrderItem.getRingOrderItemList().add(new RingOrderItem(nextRingItem.getName(), nextRingItem.getCount()));
                         }
                     }
-
-                    if (mDayItem.getOrderItemList().isEmpty()) {
-                        mDayItem.getOrderItemList().add(addOrderItem);
-
-                        StockCollection.getInstance().getDayCollection().add(mDayItem);
-                    } else {
-                        mDayItem.getOrderItemList().add(addOrderItem);
-                    }
-
-                    Intent intent = new Intent();
-                    intent.putExtra(ORDER_TITLE_PUT, addOrderItem.getTitle());
-                    intent.putExtra(PUT_EDIT_ORDER_POSITION, editOrderPosition);
-                    setResult(RESULT_OK, intent);
-
-                    finish();
-                } else {
-                    Toast.makeText(this, String.format(getString(R.string.add_order_item_exist_msg), orderTitle), Toast.LENGTH_SHORT).show();
                 }
+
+                mFireBaseOrdersEditor.updateOrderItem(this, editOrderItem);
+
+                finish();
             }
         });
 
-        fillOrderItemByOrderTitle();
+        FireBaseConnnection.setConnectedChecker(this::onShowProgressBar, true);
 
-        fireBaseOrderRings = new FireBaseOrderRings(recyclerRingsList, mDayItem, editOrderTitle);
+        String editOrderId = getIntent().getStringExtra(PUT_EDIT_ORDER_ID);
+        mFireBaseOrdersEditor = new FireBaseOrdersEditor(recyclerRingsList, editOrderId, mDayItem.getDay(), mDayItem.getMonth(), mDayItem.getYear(),
+                this::setEditOrderItem);
+    }
+
+    private void setEditOrderItem(OrderItem orderItem) {
+        mOrderTitleName.setText(orderItem.getTitle());
+        mOrderDetails.setText(orderItem.getDetails());
     }
 
     private void onShowProgressBar(Boolean visible) {
         if (visible) {
             progressBar.setVisibility(View.VISIBLE);
             recyclerRingsList.setVisibility(View.GONE);
+            mOrderTitleName.setVisibility(View.GONE);
+            mOrderDetails.setVisibility(View.GONE);
+            mSaveButton.setVisibility(View.GONE);
         } else {
             progressBar.setVisibility(View.GONE);
             recyclerRingsList.setVisibility(View.VISIBLE);
+            mOrderTitleName.setVisibility(View.VISIBLE);
+            mOrderDetails.setVisibility(View.VISIBLE);
+            mSaveButton.setVisibility(View.VISIBLE);
         }
-    }
-
-    private void fillOrderItemByOrderTitle() {
-        editOrderTitle = getIntent().getStringExtra(PUT_EDIT_ORDER_TITLE);
-        editOrderPosition = getIntent().getIntExtra(PUT_EDIT_ORDER_POSITION, 0);
-
-        if ((editOrderTitle != null) && (!editOrderTitle.isEmpty()))
-            for (OrderItem nextOrderItem: mDayItem.getOrderItemList()) {
-                if (nextOrderItem.getTitle().equals(editOrderTitle)) {
-                    mOrderTitleName.setText(nextOrderItem.getTitle());
-                    mOrderDetails.setText(nextOrderItem.getDetails());
-
-                    break;
-                }
-            }
     }
 
     private void checkSaveButtonEnabled() {
@@ -214,31 +173,4 @@ public class AddOrderActivity extends AppCompatActivity {
             mSaveButton.setBackgroundResource(R.color.disabledColor);
         }
     }
-
-    private OrderItem getCurrentEditOrderItemByTitle(String orderTitle) {
-        OrderItem resultOrderItem = null;
-
-        for (OrderItem nextOrderItem: mDayItem.getOrderItemList()) {
-            if (nextOrderItem.getTitle().equals(orderTitle)) {
-                resultOrderItem = nextOrderItem;
-                break;
-            }
-        }
-
-        return resultOrderItem;
-    }
-
-    private Boolean hasOrderItemInCurrentDay(String orderItemTitle) {
-        Boolean hasOrderItem = false;
-
-        for (OrderItem nextOrderItem: mDayItem.getOrderItemList()) {
-            if (nextOrderItem.getTitle().equals(orderItemTitle)) {
-                hasOrderItem = true;
-                break;
-            }
-        }
-
-        return hasOrderItem;
-    }
-
 }

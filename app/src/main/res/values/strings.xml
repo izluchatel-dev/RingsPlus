@@ -48,7 +48,7 @@
     <string name="add_dialog_ok">OK</string>
     <string name="add_dialog_cancel">Отмена</string>
     <string name="add_item_ballon">Элемент %s успешно добавлен на склад</string>
-    <string name="add_order_item_exist_msg">Заказ с названием %s уже существует. Пожалуйста введите другое название.</string>
+    <string name="summa_title_of_day">Общая сумма по всем заказам за</string>
 
     <string name="add_item_dialog_title">Введите имя нового элемента и нажмите ОК</string>
     <string name="summa_rings_order_postfix">%d шт.</string>

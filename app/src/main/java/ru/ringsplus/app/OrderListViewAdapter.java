@@ -23,7 +23,7 @@ public class OrderListViewAdapter extends RecyclerView.Adapter<OrderListViewAdap
     private OrderClickListener mOrderClickListener;
     private OrderDeleteClickListener mOrderDeleteClickListener;
 
-    OrderListViewAdapter(Context context, List<OrderItem> data) {
+    public OrderListViewAdapter(Context context, List<OrderItem> data) {
         this.mInflater = LayoutInflater.from(context);
         this.mOrderItems = data;
     }
@@ -47,7 +47,7 @@ public class OrderListViewAdapter extends RecyclerView.Adapter<OrderListViewAdap
             holder.mDescriptionText.setVisibility(View.GONE);
         }
 
-        if (nextOrderItem.getRingOrderItemList().size() > 0) {
+        if ((nextOrderItem.getRingOrderItemList() != null) && (nextOrderItem.getRingOrderItemList().size() > 0)) {
             StringBuilder mRingOrderItems = new StringBuilder();
             for (int i = 0; i < nextOrderItem.getRingOrderItemList().size(); i++ ) {
                 RingOrderItem nextRingOrderItem = nextOrderItem.getRingOrderItemList().get(i);
@@ -115,11 +115,11 @@ public class OrderListViewAdapter extends RecyclerView.Adapter<OrderListViewAdap
         return mOrderItems.get(id);
     }
 
-    void setOrderClickListener(OrderClickListener itemClickListener) {
+    public void setOrderClickListener(OrderClickListener itemClickListener) {
         this.mOrderClickListener = itemClickListener;
     }
 
-    void setOrderDeleteClickListener(OrderDeleteClickListener deleteClickListener) {
+    public void setOrderDeleteClickListener(OrderDeleteClickListener deleteClickListener) {
         this.mOrderDeleteClickListener = deleteClickListener;
     }
 

@@ -5,17 +5,30 @@ import java.util.List;
 
 public class OrderItem {
 
+    private String id;
     private String title;
     private String details;
-    private List<RingOrderItem> mRingOrderItemList;
     private String author;
+    private List<RingOrderItem> mRingOrderItemList;
 
-    public OrderItem(String title, String details, String author) {
+    public OrderItem() {
+    }
+
+    public OrderItem(String id, String title, String details, String author) {
+        this.id = id;
         this.title = title;
         this.details = details;
         this.author = author;
 
         mRingOrderItemList = new ArrayList<>();
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getTitle() {
@@ -34,10 +47,6 @@ public class OrderItem {
         this.details = details;
     }
 
-    public List<RingOrderItem> getRingOrderItemList() {
-        return mRingOrderItemList;
-    }
-
     public String getAuthor() {
         return author;
     }
@@ -46,13 +55,11 @@ public class OrderItem {
         this.author = author;
     }
 
-    @Override
-    public String toString() {
-        return "OrderItem{" +
-                "title='" + title + '\'' +
-                ", details='" + details + '\'' +
-                ", mRingOrderItemList=" + mRingOrderItemList +
-                ", author='" + author + '\'' +
-                '}';
+    public List<RingOrderItem> getRingOrderItemList() {
+        return mRingOrderItemList;
+    }
+
+    public void setRingOrderItemList(List<RingOrderItem> ringOrderItemList) {
+        mRingOrderItemList = ringOrderItemList;
     }
 }

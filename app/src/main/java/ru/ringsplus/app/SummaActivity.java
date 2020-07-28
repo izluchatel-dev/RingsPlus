@@ -52,7 +52,7 @@ public class SummaActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
-        progressBar = (ProgressBar) findViewById(R.id.progress_bar);
+        progressBar = findViewById(R.id.progress_bar);
 
         mDayItem = getDayItemFromIntent(getIntent());
         DrawableUtils.updateDayTitle(mDayItem, findViewById(R.id.summa_day_title));
@@ -62,7 +62,7 @@ public class SummaActivity extends AppCompatActivity {
 
         FireBaseConnnection.setConnectedChecker(this::onShowProgressBar, false);
 
-        FireBaseRingsSumma fireBaseRingsSumma = new FireBaseRingsSumma(recyclerSumma, mDayItem);
+        FireBaseRingsSumma fireBaseRingsSumma = new FireBaseRingsSumma(recyclerSumma, mDayItem.getDay(), mDayItem.getMonth(), mDayItem.getYear());
     }
 
     private void onShowProgressBar(Boolean visible) {
