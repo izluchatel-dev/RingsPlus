@@ -1,5 +1,6 @@
 package ru.ringsplus.app;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -7,14 +8,11 @@ import android.widget.Button;
 import android.widget.Switch;
 import android.widget.Toast;
 
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import ru.ringsplus.app.model.AppOptions;
-import ru.ringsplus.app.model.DayItem;
 
 public class PropertiesActivity extends AppCompatActivity {
 
@@ -55,8 +53,16 @@ public class PropertiesActivity extends AppCompatActivity {
             int currentYear = Calendar.getInstance().get(Calendar.YEAR);
             int currentMonth = Calendar.getInstance().get(Calendar.MONTH) + 1;
 
+            AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+            dialogBuilder.setTitle(getString(R.string.clear_question));
 
-            Toast.makeText(this, getString(R.string.clear_successfull), Toast.LENGTH_SHORT).show();
+            dialogBuilder.setPositiveButton(R.string.item_dialog_yes, (dialog, which) -> {
+                Toast.makeText(this, getString(R.string.clear_successfull), Toast.LENGTH_SHORT).show();
+            });
+
+            dialogBuilder.setNegativeButton(R.string.item_dialog_cancel, (dialog, which) -> dialog.cancel());
+
+            dialogBuilder.show();
         });
     }
 }

@@ -15,4 +15,11 @@
         android:enabled="true"
         android:icon="@drawable/calculate"
         android:title="@string/calculate_hint"/>
+
+    <item
+        android:id="@+id/action_help"
+        app:showAsAction="always"
+        android:enabled="true"
+        android:icon="@drawable/help"
+        android:title="@string/help_hint"/>
 </menu>

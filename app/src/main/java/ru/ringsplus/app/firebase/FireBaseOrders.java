@@ -20,6 +20,7 @@ import ru.ringsplus.app.R;
 import ru.ringsplus.app.model.DayItem;
 import ru.ringsplus.app.model.DayStatus;
 import ru.ringsplus.app.model.OrderItem;
+import ru.ringsplus.app.model.OrderStatus;
 
 import static ru.ringsplus.app.firebase.FireBaseCalendar.FIREBASE_CALENDAR_PATH;
 import static ru.ringsplus.app.model.DayStatus.CloseDay;
@@ -34,16 +35,21 @@ public class FireBaseOrders {
     private DayStatus mDayStatus = null;
 
     private DatabaseReference dayStatusReference;
+    private DatabaseReference mOrdersStatusReference;
+
+    private Integer lastOrderPosition = 0;
 
     public FireBaseOrders(RecyclerView recyclerView,
                           OrderListViewAdapter.OrderClickListener orderClickListener,
-                          OrderListViewAdapter.OrderDeleteClickListener orderDeleteClickListener,
+                          OrderListViewAdapter.OrderCheckStatusClickListener checkStatusClickListener,
                           DayItem dayItem, CheckDayStatusInterface checkDayStatusInterface) {
 
         String pathMonthAndYear = String.valueOf(dayItem.getMonth()) + String.valueOf(dayItem.getYear());
 
         String orderFullPath = String.format(FIREBASE_ORDERS_PATH, pathMonthAndYear, String.valueOf(dayItem.getDay()));
         String dayStatusFullPath = String.format(FIREBASE_DAY_STATUS_PATH, pathMonthAndYear, String.valueOf(dayItem.getDay()));
+
+        mOrdersStatusReference = FirebaseDatabase.getInstance().getReference(orderFullPath);
 
         DatabaseReference ordersReference = FirebaseDatabase.getInstance().getReference(orderFullPath);
         ordersReference.addValueEventListener(new ValueEventListener() {
@@ -61,9 +67,14 @@ public class FireBaseOrders {
                 Collections.sort(orderItems, compareOrdersItem);
 
                 mOrderListViewAdapter = new OrderListViewAdapter(recyclerView.getContext(), orderItems);
-                mOrderListViewAdapter.setOrderDeleteClickListener(orderDeleteClickListener);
+                mOrderListViewAdapter.setOrderCheckStatusClickListener(checkStatusClickListener);
                 mOrderListViewAdapter.setOrderClickListener(orderClickListener);
                 recyclerView.setAdapter(mOrderListViewAdapter);
+
+                if (lastOrderPosition > 0) {
+                    recyclerView.scrollToPosition(lastOrderPosition);
+                    lastOrderPosition = 0;
+                }
             }
 
             @Override
@@ -105,11 +116,44 @@ public class FireBaseOrders {
         });
     }
 
+    public void updateOrderItemStatus(Context context, OrderItem orderItem, OrderStatus orderStatus) {
+        orderItem.setOrderStatus(orderStatus);
+
+        String changeStatusResult = "";
+        switch (orderStatus) {
+            case ExecuteOrder: {
+                changeStatusResult = String.format(context.getString(R.string.change_order_status_execute_successful), orderItem.getTitle());
+                break;
+            }
+            case ArchiveOrder: {
+                changeStatusResult = String.format(context.getString(R.string.change_order_status_archive_successful), orderItem.getTitle());
+                break;
+            }
+        }
+
+        String finalChangeStatusResult = changeStatusResult;
+        mOrdersStatusReference.child(orderItem.getId()).setValue(orderItem, (error, ref) -> {
+            if (error == null) {
+                Toast.makeText(context, finalChangeStatusResult, Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(context, error.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
     public OrderListViewAdapter getOrderListViewAdapter() {
         return mOrderListViewAdapter;
     }
 
     public DayStatus getDayStatus() {
         return mDayStatus;
+    }
+
+    public Integer getLastOrderPosition() {
+        return lastOrderPosition;
+    }
+
+    public void setLastOrderPosition(Integer lastOrderPosition) {
+        this.lastOrderPosition = lastOrderPosition;
     }
 }

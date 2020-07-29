@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -21,7 +22,7 @@ public class OrderListViewAdapter extends RecyclerView.Adapter<OrderListViewAdap
     private List<OrderItem> mOrderItems;
     private LayoutInflater mInflater;
     private OrderClickListener mOrderClickListener;
-    private OrderDeleteClickListener mOrderDeleteClickListener;
+    private OrderCheckStatusClickListener mOrderCheckStatusClickListener;
 
     public OrderListViewAdapter(Context context, List<OrderItem> data) {
         this.mInflater = LayoutInflater.from(context);
@@ -74,6 +75,26 @@ public class OrderListViewAdapter extends RecyclerView.Adapter<OrderListViewAdap
         } else {
             holder.mAuthor.setVisibility(View.GONE);
         }
+
+        switch (nextOrderItem.getOrderStatus()) {
+            case NewOrder: {
+                holder.mOrderIcon.setImageResource(R.drawable.order_icon_new);
+                holder.mCheckStatusButton.setImageResource(R.drawable.execute_order);
+                holder.mCheckStatusButton.setVisibility(View.VISIBLE);
+                break;
+            }
+            case ExecuteOrder: {
+                holder.mOrderIcon.setImageResource(R.drawable.order_icon_execute);
+                holder.mCheckStatusButton.setImageResource(R.drawable.archive_order);
+                holder.mCheckStatusButton.setVisibility(View.VISIBLE);
+                break;
+            }
+            case ArchiveOrder: {
+                holder.mOrderIcon.setImageResource(R.drawable.order_icon_archive);
+                holder.mCheckStatusButton.setVisibility(View.GONE);
+                break;
+            }
+        }
     }
 
     @Override
@@ -82,7 +103,8 @@ public class OrderListViewAdapter extends RecyclerView.Adapter<OrderListViewAdap
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        ImageButton mDeleteButton;
+        ImageButton mCheckStatusButton;
+        ImageView mOrderIcon;
         TextView mTitleText;
         TextView mDescriptionText;
         TextView mOrderRingsText;
@@ -91,15 +113,16 @@ public class OrderListViewAdapter extends RecyclerView.Adapter<OrderListViewAdap
         ViewHolder(View itemView) {
             super(itemView);
 
-            mDeleteButton = itemView.findViewById(R.id.delete_item);
+            mOrderIcon = itemView.findViewById(R.id.order_icon);
             mTitleText = itemView.findViewById(R.id.titleName);
             mDescriptionText = itemView.findViewById(R.id.description_text);
             mOrderRingsText = itemView.findViewById(R.id.rings_list_text);
             mAuthor = itemView.findViewById(R.id.author);
 
-            mDeleteButton.setOnClickListener((view -> {
-                if (mOrderDeleteClickListener != null) {
-                    mOrderDeleteClickListener.onDeleteButtonClick(itemView, getAdapterPosition());
+            mCheckStatusButton = itemView.findViewById(R.id.check_order_status);
+            mCheckStatusButton.setOnClickListener((view -> {
+                if (mOrderCheckStatusClickListener != null) {
+                    mOrderCheckStatusClickListener.onCheckStatusButtonClick(itemView, getAdapterPosition());
                 }
             }));
 
@@ -119,15 +142,15 @@ public class OrderListViewAdapter extends RecyclerView.Adapter<OrderListViewAdap
         this.mOrderClickListener = itemClickListener;
     }
 
-    public void setOrderDeleteClickListener(OrderDeleteClickListener deleteClickListener) {
-        this.mOrderDeleteClickListener = deleteClickListener;
+    public void setOrderCheckStatusClickListener(OrderCheckStatusClickListener checkStatusClickListener) {
+        this.mOrderCheckStatusClickListener = checkStatusClickListener;
     }
 
     public interface OrderClickListener {
         void onItemClick(View view, int position);
     }
 
-    public interface OrderDeleteClickListener {
-        void onDeleteButtonClick(View view, int position);
+    public interface OrderCheckStatusClickListener {
+        void onCheckStatusButtonClick(View view, int position);
     }
 }

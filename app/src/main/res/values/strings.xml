@@ -23,6 +23,7 @@
     <string name="calculate_hint">Расчитать итоги дня</string>
     <string name="open_day_hint">Открыть день</string>
     <string name="lock_day_hint">Закрыть день</string>
+    <string name="help_hint">Справка</string>
 
     <string name="user_edit_hint">Введите имя пользователя</string>
     <string name="order_title_hint">Введите название заказа</string>
@@ -31,31 +32,35 @@
     <string name="user_save_btn">Сохранить</string>
     <string name="add_order_item_btn">Сохранить</string>
 
-    <string name="change_user_name_fmt">Имя пользователя %s успешно сохранено!</string>
-    <string name="order_item_add_success_fmt">Заказ %s успешно сохранен!</string>
+    <string name="change_user_name_fmt">Имя пользователя \"%s\" успешно сохранено!</string>
+    <string name="order_item_add_success_fmt">Заказ \"%s\" успешно сохранен!</string>
 
     <string name="receive_notify_switch">Получать уведомления</string>
 
     <string name="clear_data_title">Нажмите на кнопку Очистить для удаления данных о составах заявок.
-        Будут удалены все сохраненные заявки кроме тех что сделаны в текущем месяце.</string>
+        Будут удалены все сохраненные заявки кроме тех что сделаны за последние 3 месяца.</string>
     <string name="clear_data_button">Очистить</string>
 
-    <string name="delete_item_ballon">Элемент %s успешно удален со склада</string>
-    <string name="delete_order_item_ballon">Заказ %s успешно удален</string>
+    <string name="delete_item_ballon">Элемент \"%s\" успешно удален со склада</string>
     <string name="clear_successfull">Очистка данных успешно завершена</string>
+    <string name="clear_question">Вы дейстивтельно хотите очистить данные?</string>
     <string name="day_status_change_open">Статус дня успешно обновлен на ОТКРЫТЫЙ</string>
     <string name="day_status_change_close">Статус дня успешно обновлен на ЗАРКЫТЫЙ</string>
     <string name="add_dialog_ok">OK</string>
     <string name="add_dialog_cancel">Отмена</string>
     <string name="add_item_ballon">Элемент %s успешно добавлен на склад</string>
-    <string name="summa_title_of_day">Общая сумма по всем заказам за</string>
+    <string name="summa_title_of_day">Общая сумма по всем новым заказам за</string>
+    <string name="change_order_status_new">Выполнить заказ \"%s\"?</string>
+    <string name="change_order_status_execute">Списать заказ \"%s\"?</string>
+    <string name="change_order_status_execute_successful">Заказ \"%s\" успешно выполнен</string>
+    <string name="change_order_status_archive_successful">Заказ \"%s\" успешно списан</string>
 
     <string name="add_item_dialog_title">Введите имя нового элемента и нажмите ОК</string>
     <string name="summa_rings_order_postfix">%d шт.</string>
 
-    <string name="remove_item_dialog_title">Удалить элемент %s со склада?</string>
-    <string name="remove_item_dialog_yes">Да</string>
-    <string name="remove_item_dialog_cancel">Отмена</string>
+    <string name="remove_item_dialog_title">Удалить элемент \"%s\"?</string>
+    <string name="item_dialog_yes">Да</string>
+    <string name="item_dialog_cancel">Отмена</string>
 
     <string name="wait_dialog">Идет обновление данных… Пожалуйста подождите.</string>
 

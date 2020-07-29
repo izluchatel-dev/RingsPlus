@@ -9,6 +9,7 @@ public class OrderItem {
     private String title;
     private String details;
     private String author;
+    private OrderStatus orderStatus;
     private List<RingOrderItem> mRingOrderItemList;
 
     public OrderItem() {
@@ -19,6 +20,7 @@ public class OrderItem {
         this.title = title;
         this.details = details;
         this.author = author;
+        this.orderStatus = OrderStatus.NewOrder;
 
         mRingOrderItemList = new ArrayList<>();
     }
@@ -53,6 +55,14 @@ public class OrderItem {
 
     public void setAuthor(String author) {
         this.author = author;
+    }
+
+    public OrderStatus getOrderStatus() {
+        return orderStatus;
+    }
+
+    public void setOrderStatus(OrderStatus orderStatus) {
+        this.orderStatus = orderStatus;
     }
 
     public List<RingOrderItem> getRingOrderItemList() {

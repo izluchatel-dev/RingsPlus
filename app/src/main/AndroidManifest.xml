@@ -10,6 +10,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".OrderHelpActivity"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".SummaActivity"
             android:screenOrientation="portrait" />
         <activity

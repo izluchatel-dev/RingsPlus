@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import ru.ringsplus.app.SummaViewAdapter;
 import ru.ringsplus.app.model.DayItem;
 import ru.ringsplus.app.model.OrderItem;
+import ru.ringsplus.app.model.OrderStatus;
 import ru.ringsplus.app.model.RingItem;
 import ru.ringsplus.app.model.RingOrderItem;
 
@@ -54,10 +55,12 @@ public class FireBaseRingsSumma {
                             OrderItem nextOrder = postSnapshot.getValue(OrderItem.class);
 
                             if ((nextOrder != null) && (nextOrder.getRingOrderItemList() != null)) {
-                                for (RingOrderItem nextRingOrderItem: nextOrder.getRingOrderItemList()) {
-                                    for (RingItem nextRingItem: ringItems) {
-                                        if (nextRingItem.getName().equals(nextRingOrderItem.getRingName())) {
-                                            nextRingItem.setCount(nextRingItem.getCount() + nextRingOrderItem.getCount());
+                                if (nextOrder.getOrderStatus() == OrderStatus.NewOrder) {
+                                    for (RingOrderItem nextRingOrderItem: nextOrder.getRingOrderItemList()) {
+                                        for (RingItem nextRingItem: ringItems) {
+                                            if (nextRingItem.getName().equals(nextRingOrderItem.getRingName())) {
+                                                nextRingItem.setCount(nextRingItem.getCount() + nextRingOrderItem.getCount());
+                                            }
                                         }
                                     }
                                 }

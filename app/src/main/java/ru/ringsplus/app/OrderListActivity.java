@@ -1,5 +1,6 @@
 package ru.ringsplus.app;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -18,6 +19,7 @@ import ru.ringsplus.app.firebase.FireBaseOrders;
 import ru.ringsplus.app.model.DayItem;
 import ru.ringsplus.app.model.DayStatus;
 import ru.ringsplus.app.model.OrderItem;
+import ru.ringsplus.app.model.OrderStatus;
 import ru.ringsplus.app.utils.DrawableUtils;
 
 import static ru.ringsplus.app.model.DayStatus.CloseDay;
@@ -27,7 +29,7 @@ import static ru.ringsplus.app.utils.CalendarUtils.PUT_PARAM_MONTH;
 import static ru.ringsplus.app.utils.CalendarUtils.PUT_PARAM_YEAR;
 import static ru.ringsplus.app.utils.CalendarUtils.getDayItemFromIntent;
 
-public class OrderListActivity extends AppCompatActivity implements OrderListViewAdapter.OrderClickListener, OrderListViewAdapter.OrderDeleteClickListener {
+public class OrderListActivity extends AppCompatActivity implements OrderListViewAdapter.OrderClickListener, OrderListViewAdapter.OrderCheckStatusClickListener {
 
     public static final String PUT_EDIT_ORDER_ID = "orderId";
 
@@ -68,6 +70,9 @@ public class OrderListActivity extends AppCompatActivity implements OrderListVie
             summaIntent.putExtra(PUT_PARAM_MONTH, mDayItem.getMonth());
             summaIntent.putExtra(PUT_PARAM_YEAR, mDayItem.getYear());
             startActivity(summaIntent);
+        } else if (item.getItemId() == R.id.action_help) {
+            Intent helpIntent = new Intent(getBaseContext(), OrderHelpActivity.class);
+            startActivity(helpIntent);
         }
 
         return true;
@@ -127,28 +132,52 @@ public class OrderListActivity extends AppCompatActivity implements OrderListVie
     }
 
     @Override
-    public void onDeleteButtonClick(View view, int position) {
-        OrderItem mDeleteOrderItem = mFireBaseOrders.getOrderListViewAdapter().getItem(position);
-
-        String mStatusMsg = String.format(getString(R.string.delete_order_item_ballon), mDeleteOrderItem.getTitle());
-
-        Toast.makeText(this, mStatusMsg, Toast.LENGTH_SHORT).show();
-
-        mFireBaseOrders.getOrderListViewAdapter().notifyDataSetChanged();
-    }
-
-    @Override
     public void onItemClick(View view, int position) {
         OrderItem mEditOrderItem = mFireBaseOrders.getOrderListViewAdapter().getItem(position);
 
-        Intent editOrderIntent = new Intent(getBaseContext(), AddOrderActivity.class);
-        editOrderIntent.putExtra(PUT_PARAM_DAY, mDayItem.getDay());
-        editOrderIntent.putExtra(PUT_PARAM_MONTH, mDayItem.getMonth());
-        editOrderIntent.putExtra(PUT_PARAM_YEAR, mDayItem.getYear());
+        if (mEditOrderItem.getOrderStatus() == OrderStatus.NewOrder) {
+            Intent editOrderIntent = new Intent(getBaseContext(), AddOrderActivity.class);
+            editOrderIntent.putExtra(PUT_PARAM_DAY, mDayItem.getDay());
+            editOrderIntent.putExtra(PUT_PARAM_MONTH, mDayItem.getMonth());
+            editOrderIntent.putExtra(PUT_PARAM_YEAR, mDayItem.getYear());
 
-        editOrderIntent.putExtra(PUT_EDIT_ORDER_ID, mEditOrderItem.getId());
+            editOrderIntent.putExtra(PUT_EDIT_ORDER_ID, mEditOrderItem.getId());
 
-        startActivity(editOrderIntent);
+            startActivity(editOrderIntent);
+        }
     }
 
+    @Override
+    public void onCheckStatusButtonClick(View view, int position) {
+        OrderItem mCheckOrderItem = mFireBaseOrders.getOrderListViewAdapter().getItem(position);
+
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+
+        String questionMsg = "";
+        OrderStatus newOrderStatus = OrderStatus.NewOrder;
+        switch (mCheckOrderItem.getOrderStatus()) {
+            case NewOrder: {
+                newOrderStatus = OrderStatus.ExecuteOrder;
+                questionMsg = String.format(getString(R.string.change_order_status_new), mCheckOrderItem.getTitle());
+                break;
+            }
+            case ExecuteOrder: {
+                newOrderStatus = OrderStatus.ArchiveOrder;
+                questionMsg = String.format(getString(R.string.change_order_status_execute), mCheckOrderItem.getTitle());
+                break;
+            }
+        }
+
+        dialogBuilder.setTitle(questionMsg);
+
+        OrderStatus finalNewOrderStatus = newOrderStatus;
+        dialogBuilder.setPositiveButton(R.string.item_dialog_yes, (dialog, which) -> {
+            mFireBaseOrders.setLastOrderPosition(position - 1);
+            mFireBaseOrders.updateOrderItemStatus(this, mCheckOrderItem, finalNewOrderStatus);
+        });
+
+        dialogBuilder.setNegativeButton(R.string.item_dialog_cancel, (dialog, which) -> dialog.cancel());
+
+        dialogBuilder.show();
+    }
 }

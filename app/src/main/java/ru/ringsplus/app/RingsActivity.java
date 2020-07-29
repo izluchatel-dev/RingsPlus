@@ -7,7 +7,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -94,11 +93,11 @@ public class RingsActivity extends AppCompatActivity implements RingsViewAdapter
         String removeQuestionMsg = String.format(getString(R.string.remove_item_dialog_title), mDeleteRingItem.getName());
         dialogBuilder.setTitle(removeQuestionMsg);
 
-        dialogBuilder.setPositiveButton(R.string.remove_item_dialog_yes, (dialog, which) -> {
+        dialogBuilder.setPositiveButton(R.string.item_dialog_yes, (dialog, which) -> {
             mFireBaseRings.deleteRingItem(this, mDeleteRingItem);
         });
 
-        dialogBuilder.setNegativeButton(R.string.remove_item_dialog_cancel, (dialog, which) -> dialog.cancel());
+        dialogBuilder.setNegativeButton(R.string.item_dialog_cancel, (dialog, which) -> dialog.cancel());
 
         dialogBuilder.show();
     }
