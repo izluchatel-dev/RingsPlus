@@ -26,8 +26,6 @@ public class RingsActivity extends AppCompatActivity implements RingsViewAdapter
     private RecyclerView mRingsRecyclerView;
     private FloatingActionButton mAddRingItemButton;
 
-    private ProgressBar progressBar;
-
     private FireBaseRings mFireBaseRings;
 
     @Override
@@ -60,12 +58,6 @@ public class RingsActivity extends AppCompatActivity implements RingsViewAdapter
         mRingsRecyclerView = findViewById(R.id.stockList);
         mRingsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        progressBar =  findViewById(R.id.progress_bar);
-
-        FireBaseConnnection.setConnectedChecker(this::onShowProgressBar, false);
-
-        mFireBaseRings = new FireBaseRings(mRingsRecyclerView, this);
-
         mAddRingItemButton = findViewById(R.id.add_ring_item);
         mAddRingItemButton.setOnClickListener(view -> {
             AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
@@ -87,19 +79,11 @@ public class RingsActivity extends AppCompatActivity implements RingsViewAdapter
 
             dialogBuilder.show();
         });
+
+        FireBaseConnnection.setConnectedChecker(this, true);
+        mFireBaseRings = new FireBaseRings(mRingsRecyclerView, this);
     }
 
-    private void onShowProgressBar(Boolean visible) {
-        if (visible) {
-            progressBar.setVisibility(View.VISIBLE);
-            mRingsRecyclerView.setVisibility(View.GONE);
-            mAddRingItemButton.setVisibility(View.GONE);
-        } else {
-            progressBar.setVisibility(View.GONE);
-            mRingsRecyclerView.setVisibility(View.VISIBLE);
-            mAddRingItemButton.setVisibility(View.VISIBLE);
-        }
-    }
 
     @Override
     public void onDeleteButtonClick(View view, int position) {

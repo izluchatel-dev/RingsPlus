@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -19,7 +18,6 @@ import ru.ringsplus.app.firebase.FireBaseOrders;
 import ru.ringsplus.app.model.DayItem;
 import ru.ringsplus.app.model.DayStatus;
 import ru.ringsplus.app.model.OrderItem;
-import ru.ringsplus.app.model.StockCollection;
 import ru.ringsplus.app.utils.DrawableUtils;
 
 import static ru.ringsplus.app.model.DayStatus.CloseDay;
@@ -34,8 +32,6 @@ public class OrderListActivity extends AppCompatActivity implements OrderListVie
     public static final String PUT_EDIT_ORDER_ID = "orderId";
 
     private DayItem mDayItem;
-
-    private ProgressBar progressBar;
 
     private MenuItem dayStatusMenuItem;
     private FloatingActionButton mAddOrderButton;
@@ -89,8 +85,6 @@ public class OrderListActivity extends AppCompatActivity implements OrderListVie
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
-        progressBar =  findViewById(R.id.progress_bar);
-
         mDayItem = getDayItemFromIntent(getIntent());
         DrawableUtils.updateDayTitle(mDayItem, findViewById(R.id.day_title));
 
@@ -107,25 +101,9 @@ public class OrderListActivity extends AppCompatActivity implements OrderListVie
             startActivity(addOrderIntent);
         });
 
-        FireBaseConnnection.setConnectedChecker(this::onShowProgressBar, true);
-
+        FireBaseConnnection.setConnectedChecker(this, true);
         mFireBaseOrders = new FireBaseOrders(recyclerOrderList, this, this,
-                mDayItem.getDay(), mDayItem.getMonth(), mDayItem.getYear(), this::checkStatusDay);
-    }
-
-    private void onShowProgressBar(Boolean visible) {
-        if (visible) {
-            progressBar.setVisibility(View.VISIBLE);
-            recyclerOrderList.setVisibility(View.GONE);
-            mAddOrderButton.setVisibility(View.GONE);
-        } else {
-            progressBar.setVisibility(View.GONE);
-            recyclerOrderList.setVisibility(View.VISIBLE);
-
-            if ((mFireBaseOrders.getDayStatus() == null) || (mFireBaseOrders.getDayStatus() == OpenDay))  {
-                mAddOrderButton.setVisibility(View.VISIBLE);
-            }
-        }
+                mDayItem, this::checkStatusDay);
     }
 
     private void checkStatusDay(DayStatus dayStatus) {
@@ -153,12 +131,6 @@ public class OrderListActivity extends AppCompatActivity implements OrderListVie
         OrderItem mDeleteOrderItem = mFireBaseOrders.getOrderListViewAdapter().getItem(position);
 
         String mStatusMsg = String.format(getString(R.string.delete_order_item_ballon), mDeleteOrderItem.getTitle());
-
-        mDayItem.getOrderItemList().remove(mDeleteOrderItem);
-
-        if (mDayItem.getOrderItemList().isEmpty()) {
-            StockCollection.getInstance().getDayCollection().remove(mDayItem);
-        }
 
         Toast.makeText(this, mStatusMsg, Toast.LENGTH_SHORT).show();
 

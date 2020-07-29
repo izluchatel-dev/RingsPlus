@@ -57,6 +57,8 @@
     <string name="remove_item_dialog_yes">Да</string>
     <string name="remove_item_dialog_cancel">Отмена</string>
 
+    <string name="wait_dialog">Идет обновление данных… Пожалуйста подождите.</string>
+
     <string name="material_calendar_monday">Пн</string>
     <string name="material_calendar_tuesday">Вт</string>
     <string name="material_calendar_wednesday">Ср</string>

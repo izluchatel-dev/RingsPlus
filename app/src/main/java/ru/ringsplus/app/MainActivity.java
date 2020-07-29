@@ -10,6 +10,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.applandeo.materialcalendarview.CalendarView;
+import com.applandeo.materialcalendarview.exceptions.OutOfDateRangeException;
 
 import java.util.Calendar;
 
@@ -17,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import ru.ringsplus.app.firebase.FireBaseCalendar;
 import ru.ringsplus.app.firebase.FireBaseConnnection;
+import ru.ringsplus.app.utils.ProgressDialogWait;
 
 import static ru.ringsplus.app.utils.CalendarUtils.PUT_PARAM_DAY;
 import static ru.ringsplus.app.utils.CalendarUtils.PUT_PARAM_MONTH;
@@ -25,9 +27,6 @@ import static ru.ringsplus.app.utils.CalendarUtils.PUT_PARAM_YEAR;
 public class MainActivity extends AppCompatActivity {
 
     private CalendarView calendarView;
-    private Button detailButton;
-
-    private ProgressBar progressBar;
 
     private FireBaseCalendar mFireBaseCalendar;
 
@@ -63,23 +62,21 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        progressBar =  findViewById(R.id.progress_bar);
-
         calendarView = findViewById(R.id.calendarView);
 
         calendarView.setOnPreviousPageChangeListener(() -> {
             mFireBaseCalendar.getCalendarReference().onDisconnect();
-            FireBaseConnnection.setConnectedChecker(this::onShowProgressBar, true);
+            FireBaseConnnection.setConnectedChecker(this,true);
             mFireBaseCalendar = new FireBaseCalendar(calendarView);
         });
 
         calendarView.setOnForwardPageChangeListener(() -> {
             mFireBaseCalendar.getCalendarReference().onDisconnect();
-            FireBaseConnnection.setConnectedChecker(this::onShowProgressBar, true);
+            FireBaseConnnection.setConnectedChecker(this, true);
             mFireBaseCalendar = new FireBaseCalendar(calendarView);
         });
 
-        detailButton = findViewById(R.id.setDateButton);
+        Button detailButton = findViewById(R.id.setDateButton);
         detailButton.setOnClickListener(v -> {
             int putDay = calendarView.getFirstSelectedDate().get(Calendar.DAY_OF_MONTH);
             int putMonth = calendarView.getFirstSelectedDate().get(Calendar.MONTH) + 1;
@@ -92,23 +89,9 @@ public class MainActivity extends AppCompatActivity {
             startActivity(orderListIntent);
         });
 
-        FireBaseConnnection.setConnectedChecker(this::onShowProgressBar, false);
-
+        FireBaseConnnection.setConnectedChecker(this, false);
         mFireBaseCalendar = new FireBaseCalendar(calendarView);
     }
-
-    private void onShowProgressBar(Boolean visible) {
-        if (visible) {
-            progressBar.setVisibility(View.VISIBLE);
-            calendarView.setVisibility(View.GONE);
-            detailButton.setVisibility(View.GONE);
-        } else {
-            progressBar.setVisibility(View.GONE);
-            calendarView.setVisibility(View.VISIBLE);
-            detailButton.setVisibility(View.VISIBLE);
-        }
-    }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

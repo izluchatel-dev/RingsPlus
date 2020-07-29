@@ -17,6 +17,7 @@ import java.util.List;
 import androidx.recyclerview.widget.RecyclerView;
 import ru.ringsplus.app.AddOrderRingsViewAdapter;
 import ru.ringsplus.app.R;
+import ru.ringsplus.app.model.DayItem;
 import ru.ringsplus.app.model.DayStatus;
 import ru.ringsplus.app.model.OrderItem;
 import ru.ringsplus.app.model.RingItem;
@@ -36,13 +37,13 @@ public class FireBaseOrdersEditor {
     private DatabaseReference dayStatusReference;
     private DayStatus mDayStatus = null;
 
-    public FireBaseOrdersEditor(RecyclerView recyclerView, String orderId, int day, int month, int year,
+    public FireBaseOrdersEditor(RecyclerView recyclerView, String orderId, DayItem dayItem,
                                 SetEditOrderItemParamInterface setEditOrderItemParamInterface) {
 
-        String pathMonthAndYear = String.valueOf(month) + String.valueOf(year);
+        String pathMonthAndYear = String.valueOf(dayItem.getMonth()) + String.valueOf(dayItem.getYear());
 
-        String orderFullPath = String.format(FIREBASE_ORDERS_PATH, pathMonthAndYear, String.valueOf(day));
-        String dayStatusFullPath = String.format(FIREBASE_DAY_STATUS_PATH, pathMonthAndYear, String.valueOf(day));
+        String orderFullPath = String.format(FIREBASE_ORDERS_PATH, pathMonthAndYear, String.valueOf(dayItem.getDay()));
+        String dayStatusFullPath = String.format(FIREBASE_DAY_STATUS_PATH, pathMonthAndYear, String.valueOf(dayItem.getDay()));
 
         mOrdersReference = FirebaseDatabase.getInstance().getReference(orderFullPath);
 

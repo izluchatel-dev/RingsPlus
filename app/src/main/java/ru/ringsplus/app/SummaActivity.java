@@ -3,8 +3,6 @@ package ru.ringsplus.app;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.ProgressBar;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -18,12 +16,6 @@ import ru.ringsplus.app.utils.DrawableUtils;
 import static ru.ringsplus.app.utils.CalendarUtils.getDayItemFromIntent;
 
 public class SummaActivity extends AppCompatActivity {
-
-    private RecyclerView recyclerSumma;
-
-    private DayItem mDayItem;
-
-    private ProgressBar progressBar;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -52,27 +44,14 @@ public class SummaActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
-        progressBar = findViewById(R.id.progress_bar);
+        DayItem dayItem = getDayItemFromIntent(getIntent());
+        DrawableUtils.updateDayTitle(dayItem, findViewById(R.id.summa_day_title));
 
-        mDayItem = getDayItemFromIntent(getIntent());
-        DrawableUtils.updateDayTitle(mDayItem, findViewById(R.id.summa_day_title));
-
-        recyclerSumma = findViewById(R.id.summaRingsList);
+        RecyclerView recyclerSumma = findViewById(R.id.summaRingsList);
         recyclerSumma.setLayoutManager(new LinearLayoutManager(this));
 
-        FireBaseConnnection.setConnectedChecker(this::onShowProgressBar, false);
-
-        FireBaseRingsSumma fireBaseRingsSumma = new FireBaseRingsSumma(recyclerSumma, mDayItem.getDay(), mDayItem.getMonth(), mDayItem.getYear());
-    }
-
-    private void onShowProgressBar(Boolean visible) {
-        if (visible) {
-            progressBar.setVisibility(View.VISIBLE);
-            recyclerSumma.setVisibility(View.GONE);
-        } else {
-            progressBar.setVisibility(View.GONE);
-            recyclerSumma.setVisibility(View.VISIBLE);
-        }
+        FireBaseConnnection.setConnectedChecker(this, true);
+        FireBaseRingsSumma fireBaseRingsSumma = new FireBaseRingsSumma(recyclerSumma, dayItem);
     }
 
 }

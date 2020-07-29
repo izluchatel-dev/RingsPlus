@@ -15,6 +15,7 @@ import java.util.List;
 
 import androidx.recyclerview.widget.RecyclerView;
 import ru.ringsplus.app.SummaViewAdapter;
+import ru.ringsplus.app.model.DayItem;
 import ru.ringsplus.app.model.OrderItem;
 import ru.ringsplus.app.model.RingItem;
 import ru.ringsplus.app.model.RingOrderItem;
@@ -24,11 +25,11 @@ import static ru.ringsplus.app.firebase.FireBaseRings.FIREBASE_RINGS_PATH;
 
 public class FireBaseRingsSumma {
 
-    public FireBaseRingsSumma(RecyclerView recyclerView, int day, int month, int year) {
+    public FireBaseRingsSumma(RecyclerView recyclerView, DayItem dayItem) {
 
-        String pathMonthAndYear = String.valueOf(month) + String.valueOf(year);
+        String pathMonthAndYear = String.valueOf(dayItem.getMonth()) + String.valueOf(dayItem.getYear());
 
-        String orderFullPath = String.format(FIREBASE_ORDERS_PATH, pathMonthAndYear, String.valueOf(day));
+        String orderFullPath = String.format(FIREBASE_ORDERS_PATH, pathMonthAndYear, String.valueOf(dayItem.getDay()));
 
         DatabaseReference ringsReference = FirebaseDatabase.getInstance().getReference(FIREBASE_RINGS_PATH);
         ringsReference.addValueEventListener(new ValueEventListener() {

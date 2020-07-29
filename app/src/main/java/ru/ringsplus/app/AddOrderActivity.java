@@ -40,8 +40,6 @@ public class AddOrderActivity extends AppCompatActivity {
 
     private DayItem mDayItem;
 
-    private ProgressBar progressBar;
-
     FireBaseOrdersEditor mFireBaseOrdersEditor;
 
     @Override
@@ -77,8 +75,6 @@ public class AddOrderActivity extends AppCompatActivity {
 
         recyclerRingsList = findViewById(R.id.allRingsList);
         recyclerRingsList.setLayoutManager(new LinearLayoutManager(this));
-
-        progressBar = findViewById(R.id.progress_bar);
 
         mOrderTitleName = findViewById(R.id.titleName);
         mOrderTitleName.addTextChangedListener(new TextWatcher() {
@@ -136,10 +132,10 @@ public class AddOrderActivity extends AppCompatActivity {
             }
         });
 
-        FireBaseConnnection.setConnectedChecker(this::onShowProgressBar, true);
+        FireBaseConnnection.setConnectedChecker(this, true);
 
         String editOrderId = getIntent().getStringExtra(PUT_EDIT_ORDER_ID);
-        mFireBaseOrdersEditor = new FireBaseOrdersEditor(recyclerRingsList, editOrderId, mDayItem.getDay(), mDayItem.getMonth(), mDayItem.getYear(),
+        mFireBaseOrdersEditor = new FireBaseOrdersEditor(recyclerRingsList, editOrderId, mDayItem,
                 this::setEditOrderItem);
     }
 
@@ -148,21 +144,6 @@ public class AddOrderActivity extends AppCompatActivity {
         mOrderDetails.setText(orderItem.getDetails());
     }
 
-    private void onShowProgressBar(Boolean visible) {
-        if (visible) {
-            progressBar.setVisibility(View.VISIBLE);
-            recyclerRingsList.setVisibility(View.GONE);
-            mOrderTitleName.setVisibility(View.GONE);
-            mOrderDetails.setVisibility(View.GONE);
-            mSaveButton.setVisibility(View.GONE);
-        } else {
-            progressBar.setVisibility(View.GONE);
-            recyclerRingsList.setVisibility(View.VISIBLE);
-            mOrderTitleName.setVisibility(View.VISIBLE);
-            mOrderDetails.setVisibility(View.VISIBLE);
-            mSaveButton.setVisibility(View.VISIBLE);
-        }
-    }
 
     private void checkSaveButtonEnabled() {
         if (mOrderTitleName.length() != 0) {

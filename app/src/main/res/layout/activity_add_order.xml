@@ -27,17 +27,10 @@
         android:layout_margin="8dp"
         android:stateListAnimator="@null">
 
-        <ProgressBar
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/progress_bar"
-            android:layout_centerInParent="true"/>
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/allRingsList"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone"/>
+            android:layout_height="match_parent" />
 
     </RelativeLayout>
 
@@ -47,16 +40,14 @@
         android:layout_height="wrap_content"
         android:maxLines="1"
         android:layout_margin="8dp"
-        android:hint="@string/order_title_hint"
-        android:visibility="gone"/>
+        android:hint="@string/order_title_hint" />
 
     <EditText
         android:id="@+id/detailsText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        android:hint="@string/order_detail_hint"
-        android:visibility="gone"/>
+        android:hint="@string/order_detail_hint" />
 
     <Button
         android:id="@+id/orderItemSave"
@@ -69,6 +60,5 @@
         android:textColor="#FFFFFF"
         android:enabled="false"
         android:background="@color/disabledColor"
-        android:text="@string/add_order_item_btn"
-        android:visibility="gone"/>
+        android:text="@string/add_order_item_btn" />
 </LinearLayout>
