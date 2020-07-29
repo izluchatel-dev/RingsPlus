@@ -30,7 +30,7 @@ public class FireBaseRings {
         mRingsReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                List<RingItem> ringItems = new ArrayList<RingItem>();
+                List<RingItem> ringItems = new ArrayList<>();
 
                 for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
                     RingItem nextRing = postSnapshot.getValue(RingItem.class);

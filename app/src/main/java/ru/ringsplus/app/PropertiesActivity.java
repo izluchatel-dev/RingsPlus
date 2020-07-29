@@ -12,6 +12,7 @@ import java.util.Calendar;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import ru.ringsplus.app.firebase.FireBaseClearOrders;
 import ru.ringsplus.app.model.AppOptions;
 
 public class PropertiesActivity extends AppCompatActivity {
@@ -45,8 +46,11 @@ public class PropertiesActivity extends AppCompatActivity {
 
         Switch receiveNotify = findViewById(R.id.receive_notify);
         receiveNotify.setChecked(AppOptions.getInstance().getReceiveNotify(this));
-
         receiveNotify.setOnCheckedChangeListener((compoundButton, b) -> AppOptions.getInstance().setReceiveNotify(compoundButton.getContext(), b));
+
+        Switch showArchiveItems = findViewById(R.id.show_archive_items);
+        showArchiveItems.setChecked(AppOptions.getInstance().getShowArchiveItems(this));
+        showArchiveItems.setOnCheckedChangeListener((compoundButton, b) -> AppOptions.getInstance().setShowArchiveItems(compoundButton.getContext(), b));
 
         Button clearButton = findViewById(R.id.clearDataButton);
         clearButton.setOnClickListener(view -> {
@@ -57,7 +61,7 @@ public class PropertiesActivity extends AppCompatActivity {
             dialogBuilder.setTitle(getString(R.string.clear_question));
 
             dialogBuilder.setPositiveButton(R.string.item_dialog_yes, (dialog, which) -> {
-                Toast.makeText(this, getString(R.string.clear_successfull), Toast.LENGTH_SHORT).show();
+                FireBaseClearOrders fireBaseClearOrders = new FireBaseClearOrders(this);
             });
 
             dialogBuilder.setNegativeButton(R.string.item_dialog_cancel, (dialog, which) -> dialog.cancel());

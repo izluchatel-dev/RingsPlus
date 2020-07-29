@@ -17,6 +17,7 @@ import java.util.List;
 import androidx.recyclerview.widget.RecyclerView;
 import ru.ringsplus.app.OrderListViewAdapter;
 import ru.ringsplus.app.R;
+import ru.ringsplus.app.model.AppOptions;
 import ru.ringsplus.app.model.DayItem;
 import ru.ringsplus.app.model.DayStatus;
 import ru.ringsplus.app.model.OrderItem;
@@ -51,6 +52,8 @@ public class FireBaseOrders {
 
         mOrdersStatusReference = FirebaseDatabase.getInstance().getReference(orderFullPath);
 
+        Boolean showArchiveItems = AppOptions.getInstance().getShowArchiveItems(recyclerView.getContext());
+
         DatabaseReference ordersReference = FirebaseDatabase.getInstance().getReference(orderFullPath);
         ordersReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -60,7 +63,15 @@ public class FireBaseOrders {
                 for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
                     OrderItem nextOrder = postSnapshot.getValue(OrderItem.class);
 
-                    orderItems.add(nextOrder);
+                    if (nextOrder != null) {
+                        if (showArchiveItems) {
+                            orderItems.add(nextOrder);
+                        } else {
+                            if (nextOrder.getOrderStatus() != OrderStatus.ArchiveOrder) {
+                                orderItems.add(nextOrder);
+                            }
+                        }
+                    }
                 }
 
                 Comparator<OrderItem> compareOrdersItem = (OrderItem o1, OrderItem o2) -> o1.getTitle().compareTo( o2.getTitle() );

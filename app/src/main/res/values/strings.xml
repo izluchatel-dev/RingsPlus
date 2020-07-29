@@ -36,6 +36,7 @@
     <string name="order_item_add_success_fmt">Заказ \"%s\" успешно сохранен!</string>
 
     <string name="receive_notify_switch">Получать уведомления</string>
+    <string name="show_archive_items_switch">Показывать списанные заказы</string>
 
     <string name="clear_data_title">Нажмите на кнопку Очистить для удаления данных о составах заявок.
         Будут удалены все сохраненные заявки кроме тех что сделаны за последние 3 месяца.</string>

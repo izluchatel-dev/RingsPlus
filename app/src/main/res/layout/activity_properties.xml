@@ -22,9 +22,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
+            android:enabled="false"
             android:layoutDirection="rtl"
             app:switchPadding="8dp"
             android:text="@string/receive_notify_switch" />
+
+        <Switch
+            android:id="@+id/show_archive_items"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:layoutDirection="rtl"
+            app:switchPadding="8dp"
+            android:text="@string/show_archive_items_switch" />
     </LinearLayout>
 
     <LinearLayout

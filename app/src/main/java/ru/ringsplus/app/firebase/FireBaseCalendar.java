@@ -1,11 +1,9 @@
 package ru.ringsplus.app.firebase;
 
-import android.app.Activity;
 import android.widget.Toast;
 
 import com.applandeo.materialcalendarview.CalendarView;
 import com.applandeo.materialcalendarview.EventDay;
-import com.applandeo.materialcalendarview.exceptions.OutOfDateRangeException;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -19,7 +17,6 @@ import java.util.List;
 import ru.ringsplus.app.model.DayStatus;
 import ru.ringsplus.app.utils.CalendarUtils;
 import ru.ringsplus.app.utils.DrawableUtils;
-import ru.ringsplus.app.utils.ProgressDialogWait;
 
 public class FireBaseCalendar {
 

@@ -11,6 +11,7 @@ public class AppOptions {
     private final String PREFERENCE_FILE_NAME = "RING_PREFERENCES";
     private final String USER_NAME = "USER_NAME";
     private final String RECEIVE_NOTIFY = "RECEIVE_NOTIFICATION";
+    private final String SHOW_ARCHIVE_ITEMS = "SHOW_ARCHIVE_ITEMS";
 
     private AppOptions() {};
 
@@ -47,6 +48,19 @@ public class AppOptions {
         Editor editor = getPreferences(context).edit();
         try {
             editor.putBoolean(RECEIVE_NOTIFY, receiveNotify);
+        } finally {
+            editor.apply();
+        }
+    }
+
+    public Boolean getShowArchiveItems(Context context) {
+        return getPreferences(context).getBoolean(SHOW_ARCHIVE_ITEMS, true);
+    }
+
+    public void setShowArchiveItems(Context context, Boolean showArchiveItems) {
+        Editor editor = getPreferences(context).edit();
+        try {
+            editor.putBoolean(SHOW_ARCHIVE_ITEMS, showArchiveItems);
         } finally {
             editor.apply();
         }
