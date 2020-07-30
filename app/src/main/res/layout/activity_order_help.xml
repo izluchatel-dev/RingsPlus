@@ -11,4 +11,61 @@
         android:id="@+id/toolbar"
         style="@style/Toolbar"/>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="20dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/order_icon_new"
+            android:drawablePadding="8dp"
+            android:textSize="20sp"
+            android:text="@string/help_new_order_title" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="italic"
+            android:textColor="@color/disabledColor"
+            android:textSize="12sp"
+            android:text="@string/help_new_order_description" />
+
+        <TextView
+            android:layout_marginTop="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/order_icon_execute"
+            android:drawablePadding="8dp"
+            android:textSize="16sp"
+            android:text="@string/help_execute_order_title" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="italic"
+            android:textColor="@color/disabledColor"
+            android:textSize="12sp"
+            android:text="@string/help_execute_order_description" />
+
+        <TextView
+            android:layout_marginTop="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/order_icon_archive"
+            android:drawablePadding="8dp"
+            android:textSize="16sp"
+            android:text="@string/help_archive_order_title" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="italic"
+            android:textColor="@color/disabledColor"
+            android:textSize="12sp"
+            android:text="@string/help_archive_order_description" />
+    </LinearLayout>
+
 </LinearLayout>

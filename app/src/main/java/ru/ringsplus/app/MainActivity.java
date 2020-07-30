@@ -4,13 +4,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Button;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.applandeo.materialcalendarview.CalendarView;
-import com.applandeo.materialcalendarview.exceptions.OutOfDateRangeException;
 
 import java.util.Calendar;
 
@@ -18,7 +15,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import ru.ringsplus.app.firebase.FireBaseCalendar;
 import ru.ringsplus.app.firebase.FireBaseConnnection;
-import ru.ringsplus.app.utils.ProgressDialogWait;
 
 import static ru.ringsplus.app.utils.CalendarUtils.PUT_PARAM_DAY;
 import static ru.ringsplus.app.utils.CalendarUtils.PUT_PARAM_MONTH;
