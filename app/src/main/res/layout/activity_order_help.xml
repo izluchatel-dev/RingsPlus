@@ -22,7 +22,7 @@
             android:layout_height="wrap_content"
             android:drawableLeft="@drawable/order_icon_new"
             android:drawablePadding="8dp"
-            android:textSize="20sp"
+            android:textSize="16sp"
             android:text="@string/help_new_order_title" />
 
         <TextView
