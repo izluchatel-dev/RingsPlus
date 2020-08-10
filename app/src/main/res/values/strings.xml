@@ -68,10 +68,14 @@
     <string name="help_new_order_title"> - НОВЫЙ ЗАКАЗ</string>
     <string name="help_new_order_description">Можно редактировать. Состав учитывается при расчете итогов дня.</string>
     <string name="help_execute_order_title"> - ВЫПОЛНЕННЫЙ ЗАКАЗ</string>
-    <string name="help_execute_order_description">Нельзя редактировать. Состав не учитывается при расчете итогов дня.</string>
+    <string name="help_execute_order_description">Можно редактировать. Состав не учитывается при расчете итогов дня.</string>
     <string name="help_archive_order_title"> - СПИСАННЫЙ ЗАКАЗ</string>
     <string name="help_archive_order_description">Нельзя редактировать. Состав не учитывается при расчете итогов дня.
         Могут быть исключены из списка при помощи настройки \"Показывать списанные заказы\" </string>
+
+    <string name="author_title">Автор:</string>
+    <string name="create_date_time_title">Дата создания:</string>
+    <string name="edit_date_time_title">Дата изменения:</string>
 
     <string name="material_calendar_monday">Пн</string>
     <string name="material_calendar_tuesday">Вт</string>

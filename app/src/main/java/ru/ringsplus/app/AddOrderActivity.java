@@ -113,6 +113,8 @@ public class AddOrderActivity extends AppCompatActivity {
                     editOrderItem.setRingOrderItemList(new ArrayList<>());
                 }
                 editOrderItem.getRingOrderItemList().clear();
+
+                editOrderItem.setEditDateTime(new java.util.Date().getTime());
             } else {
                 editOrderItem = new OrderItem(UUID.randomUUID().toString(), orderTitle, orderDetails, orderAuthor);
             }

@@ -34,14 +34,14 @@
                 android:layout_toEndOf="@+id/order_icon"
                 android:layout_alignParentTop="true"
                 android:textSize="16sp"
-                android:layout_toStartOf="@id/delete_item"
+                android:layout_toStartOf="@id/check_order_status"
                 android:gravity="left"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/description_text"
                 android:textStyle="italic"
-                android:layout_toStartOf="@id/delete_item"
+                android:layout_toStartOf="@id/check_order_status"
                 android:gravity="left"
                 android:layout_toEndOf="@id/order_icon"
                 android:layout_below="@id/titleName" />
@@ -50,23 +50,93 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/rings_list_text"
-                android:layout_toStartOf="@id/delete_item"
+                android:layout_toStartOf="@id/check_order_status"
                 android:gravity="left"
                 android:layout_marginTop="8dp"
                 android:layout_toEndOf="@id/order_icon"
                 android:layout_below="@id/description_text" />
 
-            <TextView
+            <TableLayout
+                android:id="@+id/additionTableData"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/author"
-                android:textColor="@color/colorPrimary"
-                android:layout_marginTop="4dp"
-                android:textSize="12sp"
-                android:layout_toStartOf="@id/delete_item"
-                android:gravity="left"
-                android:layout_toEndOf="@id/order_icon"
-                android:layout_below="@id/rings_list_text" />
+                android:stretchColumns="1"
+                android:layout_toStartOf="@id/check_order_status"
+                android:layout_below="@id/rings_list_text">
+
+                <TableRow
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/author_title"
+                        android:textColor="@color/colorPrimary"
+                        android:layout_marginTop="4dp"
+                        android:textSize="12sp"
+                        android:layout_weight="1"
+                        android:text="@string/author_title"/>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/author_value"
+                        android:textColor="@color/colorPrimary"
+                        android:layout_marginTop="4dp"
+                        android:textSize="12sp"
+                        android:layout_weight="1" />
+                </TableRow>
+                <TableRow
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/create_date_title"
+                        android:textColor="@color/colorPrimary"
+                        android:layout_marginTop="4dp"
+                        android:textSize="12sp"
+                        android:layout_weight="1"
+                        android:text="@string/create_date_time_title"/>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/create_date_value"
+                        android:textColor="@color/colorPrimary"
+                        android:layout_marginTop="4dp"
+                        android:textSize="12sp"
+                        android:layout_weight="1" />
+                </TableRow>
+                <TableRow
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/edit_date_title"
+                        android:textColor="@color/colorPrimary"
+                        android:layout_marginTop="4dp"
+                        android:textSize="12sp"
+                        android:layout_weight="1"
+                        android:text="@string/edit_date_time_title"/>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/edit_date_value"
+                        android:textColor="@color/colorPrimary"
+                        android:layout_marginTop="4dp"
+                        android:textSize="12sp"
+                        android:layout_weight="1" />
+                </TableRow>
+            </TableLayout>
         </RelativeLayout>
     </androidx.cardview.widget.CardView>
 </LinearLayout>

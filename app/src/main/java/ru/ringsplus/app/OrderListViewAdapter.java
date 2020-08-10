@@ -11,6 +11,8 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -41,7 +43,7 @@ public class OrderListViewAdapter extends RecyclerView.Adapter<OrderListViewAdap
 
         holder.mTitleText.setText(nextOrderItem.getTitle());
 
-        if (!nextOrderItem.getDetails().isEmpty()) {
+        if ((nextOrderItem.getDetails() != null) && (!nextOrderItem.getDetails().isEmpty())) {
             holder.mDescriptionText.setText(nextOrderItem.getDetails());
             holder.mDescriptionText.setVisibility(View.VISIBLE);
         } else {
@@ -69,11 +71,31 @@ public class OrderListViewAdapter extends RecyclerView.Adapter<OrderListViewAdap
             holder.mOrderRingsText.setVisibility(View.GONE);
         }
 
-        if (!nextOrderItem.getAuthor().isEmpty()) {
+        if ((nextOrderItem.getAuthor() != null) && (!nextOrderItem.getAuthor().isEmpty())) {
+            holder.mAuthorTitle.setVisibility(View.VISIBLE);
             holder.mAuthor.setText(nextOrderItem.getAuthor());
             holder.mAuthor.setVisibility(View.VISIBLE);
         } else {
+            holder.mAuthorTitle.setVisibility(View.GONE);
             holder.mAuthor.setVisibility(View.GONE);
+        }
+
+        if ((nextOrderItem.getCreateDateTime() != null) && (nextOrderItem.getCreateDateTime() > 0)) {
+            holder.mCreateDateTimeTitle.setVisibility(View.VISIBLE);
+            holder.mCreateDateTime.setText(getDateTimeFmt(nextOrderItem.getCreateDateTime()));
+            holder.mCreateDateTime.setVisibility(View.VISIBLE);
+        } else {
+            holder.mCreateDateTimeTitle.setVisibility(View.GONE);
+            holder.mCreateDateTime.setVisibility(View.GONE);
+        }
+
+        if ((nextOrderItem.getEditDateTime() != null) && (nextOrderItem.getEditDateTime() > 0)) {
+            holder.mEditDateTimeTitle.setVisibility(View.VISIBLE);
+            holder.mEditDateTime.setText(getDateTimeFmt(nextOrderItem.getEditDateTime()));
+            holder.mEditDateTime.setVisibility(View.VISIBLE);
+        } else {
+            holder.mEditDateTimeTitle.setVisibility(View.GONE);
+            holder.mEditDateTime.setVisibility(View.GONE);
         }
 
         switch (nextOrderItem.getOrderStatus()) {
@@ -97,6 +119,11 @@ public class OrderListViewAdapter extends RecyclerView.Adapter<OrderListViewAdap
         }
     }
 
+    private String getDateTimeFmt(Long dateTime) {
+        DateFormat formatter = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
+        return formatter.format(dateTime);
+    }
+
     @Override
     public int getItemCount() {
         return mOrderItems.size();
@@ -109,6 +136,11 @@ public class OrderListViewAdapter extends RecyclerView.Adapter<OrderListViewAdap
         TextView mDescriptionText;
         TextView mOrderRingsText;
         TextView mAuthor;
+        TextView mAuthorTitle;
+        TextView mCreateDateTime;
+        TextView mCreateDateTimeTitle;
+        TextView mEditDateTime;
+        TextView mEditDateTimeTitle;
 
         ViewHolder(View itemView) {
             super(itemView);
@@ -117,7 +149,12 @@ public class OrderListViewAdapter extends RecyclerView.Adapter<OrderListViewAdap
             mTitleText = itemView.findViewById(R.id.titleName);
             mDescriptionText = itemView.findViewById(R.id.description_text);
             mOrderRingsText = itemView.findViewById(R.id.rings_list_text);
-            mAuthor = itemView.findViewById(R.id.author);
+            mAuthor = itemView.findViewById(R.id.author_value);
+            mAuthorTitle = itemView.findViewById(R.id.author_title);
+            mCreateDateTime = itemView.findViewById(R.id.create_date_value);
+            mCreateDateTimeTitle = itemView.findViewById(R.id.create_date_title);
+            mEditDateTime = itemView.findViewById(R.id.edit_date_value);
+            mEditDateTimeTitle = itemView.findViewById(R.id.edit_date_title);
 
             mCheckStatusButton = itemView.findViewById(R.id.check_order_status);
             mCheckStatusButton.setOnClickListener((view -> {

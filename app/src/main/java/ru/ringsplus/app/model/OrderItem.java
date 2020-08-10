@@ -11,6 +11,8 @@ public class OrderItem {
     private String author;
     private OrderStatus orderStatus;
     private List<RingOrderItem> mRingOrderItemList;
+    private Long createDateTime;
+    private Long editDateTime;
 
     public OrderItem() {
     }
@@ -21,6 +23,7 @@ public class OrderItem {
         this.details = details;
         this.author = author;
         this.orderStatus = OrderStatus.NewOrder;
+        this.createDateTime = new java.util.Date().getTime();
 
         mRingOrderItemList = new ArrayList<>();
     }
@@ -71,5 +74,21 @@ public class OrderItem {
 
     public void setRingOrderItemList(List<RingOrderItem> ringOrderItemList) {
         mRingOrderItemList = ringOrderItemList;
+    }
+
+    public Long getCreateDateTime() {
+        return createDateTime;
+    }
+
+    public void setCreateDateTime(Long createDateTime) {
+        this.createDateTime = createDateTime;
+    }
+
+    public Long getEditDateTime() {
+        return editDateTime;
+    }
+
+    public void setEditDateTime(Long editDateTime) {
+        this.editDateTime = editDateTime;
     }
 }

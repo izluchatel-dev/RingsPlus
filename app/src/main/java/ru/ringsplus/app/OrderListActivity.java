@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -135,7 +134,7 @@ public class OrderListActivity extends AppCompatActivity implements OrderListVie
     public void onItemClick(View view, int position) {
         OrderItem mEditOrderItem = mFireBaseOrders.getOrderListViewAdapter().getItem(position);
 
-        if (mEditOrderItem.getOrderStatus() == OrderStatus.NewOrder) {
+        if ((mEditOrderItem.getOrderStatus() == OrderStatus.NewOrder) || (mEditOrderItem.getOrderStatus() == OrderStatus.ExecuteOrder)) {
             Intent editOrderIntent = new Intent(getBaseContext(), AddOrderActivity.class);
             editOrderIntent.putExtra(PUT_PARAM_DAY, mDayItem.getDay());
             editOrderIntent.putExtra(PUT_PARAM_MONTH, mDayItem.getMonth());
