@@ -18,8 +18,8 @@ import java.util.Random;
 
 import androidx.core.app.NotificationCompat;
 import ru.ringsplus.app.MainActivity;
-import ru.ringsplus.app.OrderListActivity;
 import ru.ringsplus.app.R;
+import ru.ringsplus.app.model.AppOptions;
 
 import static ru.ringsplus.app.utils.CalendarUtils.PUT_PARAM_DAY;
 import static ru.ringsplus.app.utils.CalendarUtils.PUT_PARAM_MONTH;
@@ -49,52 +49,55 @@ public class FirebaseInstanceService extends FirebaseMessagingService {
             String day = getMessageData(remoteMessage, "day");
             String month = getMessageData(remoteMessage, "month");
             String year = getMessageData(remoteMessage, "year");
+            String appUniKey = getMessageData(remoteMessage, "app_uni_key");
 
-            NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+            if (!AppOptions.getInstance().getApplicationUniKey().equals(appUniKey)) {
+                NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 
-                NotificationChannel notificationChannel = new NotificationChannel(getString(R.string.default_notification_channel_id), getString(R.string.receive_notify_switch),
-                        notificationManager.IMPORTANCE_DEFAULT);
+                    NotificationChannel notificationChannel = new NotificationChannel(getString(R.string.default_notification_channel_id), getString(R.string.receive_notify_switch),
+                            notificationManager.IMPORTANCE_DEFAULT);
 
-                String NOTIFICATION_CHANNEL_DESC = "RingPlusChannel";
-                notificationChannel.setDescription(NOTIFICATION_CHANNEL_DESC);
-                notificationChannel.enableLights(true);
-                notificationChannel.setLightColor(Color.BLUE);
-                notificationChannel.setVibrationPattern(new long[] {0, 1000, 500, 1000});
+                    String NOTIFICATION_CHANNEL_DESC = "RingPlusChannel";
+                    notificationChannel.setDescription(NOTIFICATION_CHANNEL_DESC);
+                    notificationChannel.enableLights(true);
+                    notificationChannel.setLightColor(Color.BLUE);
+                    notificationChannel.setVibrationPattern(new long[] {0, 1000, 500, 1000});
 
-                notificationManager.createNotificationChannel(notificationChannel);
+                    notificationManager.createNotificationChannel(notificationChannel);
+                }
+
+                Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+
+                Intent intent = new Intent(this, MainActivity.class);
+                intent.putExtra(PUT_PARAM_DAY, Integer.valueOf(day));
+                intent.putExtra(PUT_PARAM_MONTH, Integer.valueOf(month));
+                intent.putExtra(PUT_PARAM_YEAR, Integer.valueOf(year));
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+                PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
+
+                NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this,
+                        getString(R.string.default_notification_channel_id));
+
+                notificationBuilder.setAutoCancel(true)
+                        .setDefaults(Notification.DEFAULT_ALL)
+                        .setWhen(System.currentTimeMillis())
+                        .setSmallIcon(R.drawable.ic_launcher_foreground)
+                        .setSound(defaultSoundUri)
+                        .setContentTitle(notifyTitle)
+                        .setContentText(notifyBody)
+                        .setContentIntent(pendingIntent);
+
+                notificationManager.notify(new Random().nextInt(), notificationBuilder.build());
             }
-
-            Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-
-            Intent intent = new Intent(this, MainActivity.class);
-            intent.putExtra(PUT_PARAM_DAY, Integer.valueOf(day));
-            intent.putExtra(PUT_PARAM_MONTH, Integer.valueOf(month));
-            intent.putExtra(PUT_PARAM_YEAR, Integer.valueOf(year));
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
-
-            NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this,
-                    getString(R.string.default_notification_channel_id));
-
-            notificationBuilder.setAutoCancel(true)
-                    .setDefaults(Notification.DEFAULT_ALL)
-                    .setWhen(System.currentTimeMillis())
-                    .setSmallIcon(R.drawable.ic_launcher_foreground)
-                    .setSound(defaultSoundUri)
-                    .setContentTitle(notifyTitle)
-                    .setContentText(notifyBody)
-                    .setContentIntent(pendingIntent);
-
-            notificationManager.notify(new Random().nextInt(), notificationBuilder.build());
         }
     }
 
     @Override
     public void onNewToken(String s) {
         super.onNewToken(s);
-
     }
+
 }

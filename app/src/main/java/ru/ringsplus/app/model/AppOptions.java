@@ -6,6 +6,8 @@ import android.content.SharedPreferences.Editor;
 
 import com.google.firebase.messaging.FirebaseMessaging;
 
+import java.util.Random;
+
 public class AppOptions {
 
     private static AppOptions sAppOptions;
@@ -15,11 +17,15 @@ public class AppOptions {
     private final String RECEIVE_NOTIFY = "RECEIVE_NOTIFICATION";
     private final String SHOW_ARCHIVE_ITEMS = "SHOW_ARCHIVE_ITEMS";
 
+    private String mApplicationUniKey = "";
+
     private AppOptions() {};
 
     public static AppOptions getInstance() {
         if (sAppOptions == null) {
             sAppOptions = new AppOptions();
+
+            sAppOptions.mApplicationUniKey = String.valueOf(new Random().nextInt());
         }
 
         return sAppOptions;
@@ -77,4 +83,9 @@ public class AppOptions {
             FirebaseMessaging.getInstance().unsubscribeFromTopic(TOPIC_NAME);
         }
     }
+
+    public String getApplicationUniKey() {
+        return mApplicationUniKey;
+    }
+
 }

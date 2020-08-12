@@ -9,6 +9,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
+import ru.ringsplus.app.model.AppOptions;
 import ru.ringsplus.app.model.DayItem;
 
 public class MessageSenderService {
@@ -30,6 +31,7 @@ public class MessageSenderService {
                     String jsonInit = "{\n" +
                             "    \"to\": \"/topics/all_dev\",\n" +
                             "    \"data\": {\n" +
+                            "        \"app_uni_key\": \"" + AppOptions.getInstance().getApplicationUniKey() + "\",\n" +
                             "        \"day\": \"" + dayItem.getDay() + "\",\n" +
                             "        \"month\": \"" + dayItem.getMonth() + "\",\n" +
                             "        \"year\": \"" + dayItem.getYear() + "\",\n" +
@@ -37,8 +39,6 @@ public class MessageSenderService {
                             "        \"body\": \"" + body + "\"\n" +
                             "    }\n" +
                             "}";
-
-                    Log.i("JSON: ", jsonInit);
 
                     JSONObject jsonParam = new JSONObject(jsonInit);
 

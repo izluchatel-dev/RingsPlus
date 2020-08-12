@@ -28,7 +28,6 @@ import ru.ringsplus.app.model.RingOrderItem;
 import static ru.ringsplus.app.firebase.FireBaseOrders.FIREBASE_DAY_STATUS_PATH;
 import static ru.ringsplus.app.firebase.FireBaseOrders.FIREBASE_ORDERS_PATH;
 import static ru.ringsplus.app.firebase.FireBaseRings.FIREBASE_RINGS_PATH;
-import static ru.ringsplus.app.model.DayStatus.CloseDay;
 import static ru.ringsplus.app.model.DayStatus.OpenDay;
 
 public class FireBaseOrdersEditor {

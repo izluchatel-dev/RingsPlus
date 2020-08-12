@@ -8,8 +8,6 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.applandeo.materialcalendarview.CalendarView;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.Calendar;
 
@@ -17,7 +15,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import ru.ringsplus.app.firebase.FireBaseCalendar;
 import ru.ringsplus.app.firebase.FireBaseConnnection;
-import ru.ringsplus.app.firebase.service.MessageSenderService;
 import ru.ringsplus.app.model.AppOptions;
 import ru.ringsplus.app.model.DayItem;
 
@@ -99,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void checkNotifyClick() {
         DayItem mDayItem = getDayItemFromIntent(getIntent());
+
         if (mDayItem != null) {
             Intent orderListIntent = new Intent(getBaseContext(), OrderListActivity.class);
             orderListIntent.putExtra(PUT_PARAM_DAY, mDayItem.getDay());
