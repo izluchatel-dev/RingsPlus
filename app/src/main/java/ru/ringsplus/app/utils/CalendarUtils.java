@@ -25,7 +25,10 @@ public class CalendarUtils {
             int month = intent.getIntExtra(PUT_PARAM_MONTH, 0);
             int day = intent.getIntExtra(PUT_PARAM_DAY, 0);
 
-            return new DayItem(year, month, day);
+            if ((day != 0) && (month != 0) && (year != 0)) {
+                return new DayItem(year, month, day);
+            } else
+                 return null;
         } else
             return null;
     }

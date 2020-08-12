@@ -93,6 +93,19 @@ public class MainActivity extends AppCompatActivity {
 
         FireBaseConnnection.setConnectedChecker(this, false);
         mFireBaseCalendar = new FireBaseCalendar(calendarView);
+
+        checkNotifyClick();
+    }
+
+    private void checkNotifyClick() {
+        DayItem mDayItem = getDayItemFromIntent(getIntent());
+        if (mDayItem != null) {
+            Intent orderListIntent = new Intent(getBaseContext(), OrderListActivity.class);
+            orderListIntent.putExtra(PUT_PARAM_DAY, mDayItem.getDay());
+            orderListIntent.putExtra(PUT_PARAM_MONTH, mDayItem.getMonth());
+            orderListIntent.putExtra(PUT_PARAM_YEAR, mDayItem.getYear());
+            startActivity(orderListIntent);
+        }
     }
 
     @Override

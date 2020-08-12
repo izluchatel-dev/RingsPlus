@@ -185,7 +185,7 @@ public class FireBaseOrdersEditor {
                 String mAuthorTitle = String.format(context.getString(R.string.author_notify_fmt), AppOptions.getInstance().getUserName(context));
                 mNotifyBody.append(mAuthorTitle);
 
-                new MessageSenderService().sendPost(mNotifyTitle, mNotifyBody.toString());
+                new MessageSenderService().sendPost(mNotifyTitle, mNotifyBody.toString(), dayItem);
 
                 Toast.makeText(context, mStatusMsg, Toast.LENGTH_SHORT).show();
             } else {

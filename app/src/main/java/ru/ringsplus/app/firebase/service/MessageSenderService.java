@@ -1,5 +1,7 @@
 package ru.ringsplus.app.firebase.service;
 
+import android.util.Log;
+
 import org.json.JSONObject;
 
 import java.io.DataOutputStream;
@@ -7,9 +9,11 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
+import ru.ringsplus.app.model.DayItem;
+
 public class MessageSenderService {
 
-    public void sendPost(String title, String body) {
+    public void sendPost(String title, String body, DayItem dayItem) {
         Thread thread = new Thread(() -> {
             try {
                 URL url = new URL("https://fcm.googleapis.com/fcm/send");
@@ -25,11 +29,16 @@ public class MessageSenderService {
 
                     String jsonInit = "{\n" +
                             "    \"to\": \"/topics/all_dev\",\n" +
-                            "    \"notification\": {\n" +
+                            "    \"data\": {\n" +
+                            "        \"day\": \"" + dayItem.getDay() + "\",\n" +
+                            "        \"month\": \"" + dayItem.getMonth() + "\",\n" +
+                            "        \"year\": \"" + dayItem.getYear() + "\",\n" +
                             "        \"title\": \"" + title + "\",\n" +
                             "        \"body\": \"" + body + "\"\n" +
                             "    }\n" +
                             "}";
+
+                    Log.i("JSON: ", jsonInit);
 
                     JSONObject jsonParam = new JSONObject(jsonInit);
 
@@ -38,6 +47,8 @@ public class MessageSenderService {
                     DataOutputStream os = new DataOutputStream(httpURLConnection.getOutputStream());
                     try {
                         os.write(jsonByteArray);
+
+                        Log.i("SEND STATUS", httpURLConnection.getResponseMessage());
                     } finally {
                         os.flush();
                         os.close();
