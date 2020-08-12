@@ -17,6 +17,8 @@ import java.util.List;
 import androidx.recyclerview.widget.RecyclerView;
 import ru.ringsplus.app.AddOrderRingsViewAdapter;
 import ru.ringsplus.app.R;
+import ru.ringsplus.app.firebase.service.MessageSenderService;
+import ru.ringsplus.app.model.AppOptions;
 import ru.ringsplus.app.model.DayItem;
 import ru.ringsplus.app.model.DayStatus;
 import ru.ringsplus.app.model.OrderItem;
@@ -155,10 +157,35 @@ public class FireBaseOrdersEditor {
         return editOrderItem;
     }
 
-    public void updateOrderItem(Context context, OrderItem orderItem) {
+    public void updateOrderItem(Context context, OrderItem orderItem, Boolean createFlag, DayItem dayItem) {
         mOrdersReference.child(orderItem.getId()).setValue(orderItem, (error, ref) -> {
             if (error == null) {
                 String mStatusMsg = String.format(context.getString(R.string.order_item_add_success_fmt), orderItem.getTitle());
+
+                String mNotifyTitle;
+                String mDayStr = String.format("%d.%d.%d", dayItem.getDay(), dayItem.getMonth(), dayItem.getYear());
+
+                if (createFlag) {
+                    mNotifyTitle = String.format(context.getString(R.string.create_new_order_notify_fmt), orderItem.getTitle(), mDayStr);
+                } else {
+                    mNotifyTitle = String.format(context.getString(R.string.edit_order_notify_fmt), orderItem.getTitle(), mDayStr);
+                }
+
+                StringBuilder mNotifyBody = new StringBuilder();
+                if (orderItem.getRingOrderItemList() != null) {
+                    for (RingOrderItem ringOrderItem:  orderItem.getRingOrderItemList()) {
+                        mNotifyBody.append("* ");
+                        mNotifyBody.append(ringOrderItem.getRingName());
+                        mNotifyBody.append(" - ");
+                        mNotifyBody.append(ringOrderItem.getCount());
+                        mNotifyBody.append("\n");
+                    }
+                }
+
+                String mAuthorTitle = String.format(context.getString(R.string.author_notify_fmt), AppOptions.getInstance().getUserName(context));
+                mNotifyBody.append(mAuthorTitle);
+
+                new MessageSenderService().sendPost(mNotifyTitle, mNotifyBody.toString());
 
                 Toast.makeText(context, mStatusMsg, Toast.LENGTH_SHORT).show();
             } else {

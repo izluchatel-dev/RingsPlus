@@ -32,8 +32,8 @@
     <string name="user_save_btn">Сохранить</string>
     <string name="add_order_item_btn">Сохранить</string>
 
-    <string name="change_user_name_fmt">Имя пользователя \"%s\" успешно сохранено!</string>
-    <string name="order_item_add_success_fmt">Заказ \"%s\" успешно сохранен!</string>
+    <string name="change_user_name_fmt">Имя пользователя \'%s\' успешно сохранено!</string>
+    <string name="order_item_add_success_fmt">Заказ \'%s\' успешно сохранен!</string>
 
     <string name="receive_notify_switch">Получать уведомления</string>
     <string name="show_archive_items_switch">Показывать списанные заказы</string>
@@ -42,24 +42,24 @@
         Будут удалены все сохраненные заявки кроме тех что сделаны за последние 3 месяца.</string>
     <string name="clear_data_button">Очистить</string>
 
-    <string name="delete_item_ballon">Элемент \"%s\" успешно удален со склада</string>
+    <string name="delete_item_ballon">Элемент \'%s\' успешно удален со склада</string>
     <string name="clear_successfull">Очистка данных успешно завершена</string>
     <string name="clear_question">Вы дейстивтельно хотите очистить данные?</string>
     <string name="day_status_change_open">Статус дня успешно обновлен на ОТКРЫТЫЙ</string>
     <string name="day_status_change_close">Статус дня успешно обновлен на ЗАРКЫТЫЙ</string>
     <string name="add_dialog_ok">OK</string>
     <string name="add_dialog_cancel">Отмена</string>
-    <string name="add_item_ballon">Элемент %s успешно добавлен на склад</string>
+    <string name="add_item_ballon">Элемент \'%s\' успешно добавлен на склад</string>
     <string name="summa_title_of_day">Общая сумма по всем новым заказам за</string>
-    <string name="change_order_status_new">Выполнить заказ \"%s\"?</string>
-    <string name="change_order_status_execute">Списать заказ \"%s\"?</string>
-    <string name="change_order_status_execute_successful">Заказ \"%s\" успешно выполнен</string>
-    <string name="change_order_status_archive_successful">Заказ \"%s\" успешно списан</string>
+    <string name="change_order_status_new">Выполнить заказ \'%s\'?</string>
+    <string name="change_order_status_execute">Списать заказ \'%s\'?</string>
+    <string name="change_order_status_execute_successful">Заказ \'%s\' успешно выполнен</string>
+    <string name="change_order_status_archive_successful">Заказ \'%s\' успешно списан</string>
 
     <string name="add_item_dialog_title">Введите имя нового элемента и нажмите ОК</string>
     <string name="summa_rings_order_postfix">%d шт.</string>
 
-    <string name="remove_item_dialog_title">Удалить элемент \"%s\"?</string>
+    <string name="remove_item_dialog_title">Удалить элемент \'%s\'?</string>
     <string name="item_dialog_yes">Да</string>
     <string name="item_dialog_cancel">Отмена</string>
 
@@ -71,11 +71,17 @@
     <string name="help_execute_order_description">Можно редактировать. Состав не учитывается при расчете итогов дня.</string>
     <string name="help_archive_order_title"> - СПИСАННЫЙ ЗАКАЗ</string>
     <string name="help_archive_order_description">Нельзя редактировать. Состав не учитывается при расчете итогов дня.
-        Могут быть исключены из списка при помощи настройки \"Показывать списанные заказы\" </string>
+        Могут быть исключены из списка при помощи настройки \'Показывать списанные заказы\' </string>
 
     <string name="author_title">Автор:</string>
     <string name="create_date_time_title">Дата создания:</string>
     <string name="edit_date_time_title">Дата изменения:</string>
+
+    <string name="default_notification_channel_id">ru.ringsplus.app.notify</string>
+
+    <string name="create_new_order_notify_fmt">Создан новый заказ \'%s\' (%s)</string>
+    <string name="edit_order_notify_fmt">Изменен заказ \'%s\' (%s)</string>
+    <string name="author_notify_fmt">Автор: %s</string>
 
     <string name="material_calendar_monday">Пн</string>
     <string name="material_calendar_tuesday">Вт</string>

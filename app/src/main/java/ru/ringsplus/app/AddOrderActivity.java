@@ -103,6 +103,7 @@ public class AddOrderActivity extends AppCompatActivity {
             String orderAuthor = AppOptions.getInstance().getUserName(this);
 
             OrderItem editOrderItem = mFireBaseOrdersEditor.getEditOrderItem();
+            Boolean createFlag = false;
 
             if (editOrderItem != null) {
                 editOrderItem.setTitle(orderTitle);
@@ -117,6 +118,7 @@ public class AddOrderActivity extends AppCompatActivity {
                 editOrderItem.setEditDateTime(new java.util.Date().getTime());
             } else {
                 editOrderItem = new OrderItem(UUID.randomUUID().toString(), orderTitle, orderDetails, orderAuthor);
+                createFlag = true;
             }
 
             if (editOrderItem != null) {
@@ -128,7 +130,7 @@ public class AddOrderActivity extends AppCompatActivity {
                     }
                 }
 
-                mFireBaseOrdersEditor.updateOrderItem(this, editOrderItem);
+                mFireBaseOrdersEditor.updateOrderItem(this, editOrderItem, createFlag, mDayItem);
 
                 finish();
             }

@@ -3,11 +3,18 @@ package ru.ringsplus.app;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import org.json.JSONObject;
+
+import java.io.DataOutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -27,6 +34,7 @@ import static ru.ringsplus.app.utils.CalendarUtils.PUT_PARAM_DAY;
 import static ru.ringsplus.app.utils.CalendarUtils.PUT_PARAM_MONTH;
 import static ru.ringsplus.app.utils.CalendarUtils.PUT_PARAM_YEAR;
 import static ru.ringsplus.app.utils.CalendarUtils.getDayItemFromIntent;
+
 
 public class OrderListActivity extends AppCompatActivity implements OrderListViewAdapter.OrderClickListener, OrderListViewAdapter.OrderCheckStatusClickListener {
 
@@ -172,11 +180,12 @@ public class OrderListActivity extends AppCompatActivity implements OrderListVie
         OrderStatus finalNewOrderStatus = newOrderStatus;
         dialogBuilder.setPositiveButton(R.string.item_dialog_yes, (dialog, which) -> {
             mFireBaseOrders.setLastOrderPosition(position - 1);
-            mFireBaseOrders.updateOrderItemStatus(this, mCheckOrderItem, finalNewOrderStatus);
+            mFireBaseOrders.updateOrderItemStatus(this, mCheckOrderItem, finalNewOrderStatus, mDayItem);
         });
 
         dialogBuilder.setNegativeButton(R.string.item_dialog_cancel, (dialog, which) -> dialog.cancel());
 
         dialogBuilder.show();
     }
+
 }

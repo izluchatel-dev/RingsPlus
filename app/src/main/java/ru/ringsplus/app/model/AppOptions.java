@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 
+import com.google.firebase.messaging.FirebaseMessaging;
+
 public class AppOptions {
 
     private static AppOptions sAppOptions;
@@ -63,6 +65,16 @@ public class AppOptions {
             editor.putBoolean(SHOW_ARCHIVE_ITEMS, showArchiveItems);
         } finally {
             editor.apply();
+        }
+    }
+
+    public void checkReceiveNotify(Context context) {
+        final String TOPIC_NAME = "all_dev";
+
+        if (AppOptions.getInstance().getReceiveNotify(context)) {
+            FirebaseMessaging.getInstance().subscribeToTopic(TOPIC_NAME);
+        } else {
+            FirebaseMessaging.getInstance().unsubscribeFromTopic(TOPIC_NAME);
         }
     }
 }

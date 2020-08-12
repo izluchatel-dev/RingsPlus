@@ -20,11 +20,14 @@ public class CalendarUtils {
     }
 
     public static DayItem getDayItemFromIntent(Intent intent) {
-        int year = intent.getIntExtra(PUT_PARAM_YEAR, 0);
-        int month = intent.getIntExtra(PUT_PARAM_MONTH, 0);
-        int day = intent.getIntExtra(PUT_PARAM_DAY, 0);
+        if (intent != null) {
+            int year = intent.getIntExtra(PUT_PARAM_YEAR, 0);
+            int month = intent.getIntExtra(PUT_PARAM_MONTH, 0);
+            int day = intent.getIntExtra(PUT_PARAM_DAY, 0);
 
-        return new DayItem(year, month, day);
+            return new DayItem(year, month, day);
+        } else
+            return null;
     }
 
 }

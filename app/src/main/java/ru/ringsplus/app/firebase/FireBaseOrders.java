@@ -17,6 +17,7 @@ import java.util.List;
 import androidx.recyclerview.widget.RecyclerView;
 import ru.ringsplus.app.OrderListViewAdapter;
 import ru.ringsplus.app.R;
+import ru.ringsplus.app.firebase.service.MessageSenderService;
 import ru.ringsplus.app.model.AppOptions;
 import ru.ringsplus.app.model.DayItem;
 import ru.ringsplus.app.model.DayStatus;
@@ -127,7 +128,7 @@ public class FireBaseOrders {
         });
     }
 
-    public void updateOrderItemStatus(Context context, OrderItem orderItem, OrderStatus orderStatus) {
+    public void updateOrderItemStatus(Context context, OrderItem orderItem, OrderStatus orderStatus, DayItem dayItem) {
         orderItem.setOrderStatus(orderStatus);
 
         String changeStatusResult = "";
@@ -145,6 +146,16 @@ public class FireBaseOrders {
         String finalChangeStatusResult = changeStatusResult;
         mOrdersStatusReference.child(orderItem.getId()).setValue(orderItem, (error, ref) -> {
             if (error == null) {
+                String mDayStr = String.format("%d.%d.%d", dayItem.getDay(), dayItem.getMonth(), dayItem.getYear());
+                StringBuilder notifyTitle = new StringBuilder(finalChangeStatusResult);
+                notifyTitle.append(" (");
+                notifyTitle.append(mDayStr);
+                notifyTitle.append(")");
+
+                String mAuthorTitle = String.format(context.getString(R.string.author_notify_fmt), AppOptions.getInstance().getUserName(context));
+
+                new MessageSenderService().sendPost(notifyTitle.toString(), mAuthorTitle);
+
                 Toast.makeText(context, finalChangeStatusResult, Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(context, error.getMessage(), Toast.LENGTH_LONG).show();
