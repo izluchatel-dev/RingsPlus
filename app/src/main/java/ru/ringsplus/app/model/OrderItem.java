@@ -9,6 +9,7 @@ public class OrderItem {
     private String title;
     private String details;
     private String author;
+    private String editor;
     private OrderStatus orderStatus;
     private List<RingOrderItem> mRingOrderItemList;
     private Long createDateTime;
@@ -58,6 +59,14 @@ public class OrderItem {
 
     public void setAuthor(String author) {
         this.author = author;
+    }
+
+    public String getEditor() {
+        return editor;
+    }
+
+    public void setEditor(String editor) {
+        this.editor = editor;
     }
 
     public OrderStatus getOrderStatus() {

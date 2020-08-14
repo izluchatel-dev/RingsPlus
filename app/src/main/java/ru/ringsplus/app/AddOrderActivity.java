@@ -100,7 +100,6 @@ public class AddOrderActivity extends AppCompatActivity {
         mSaveButton.setOnClickListener( view -> {
             String orderTitle = String.valueOf(mOrderTitleName.getText()).trim();
             String orderDetails = String.valueOf(mOrderDetails.getText()).trim();
-            String orderAuthor = AppOptions.getInstance().getUserName(this);
 
             OrderItem editOrderItem = mFireBaseOrdersEditor.getEditOrderItem();
             Boolean createFlag = false;
@@ -108,7 +107,6 @@ public class AddOrderActivity extends AppCompatActivity {
             if (editOrderItem != null) {
                 editOrderItem.setTitle(orderTitle);
                 editOrderItem.setDetails(orderDetails);
-                editOrderItem.setAuthor(orderAuthor);
 
                 if (editOrderItem.getRingOrderItemList() == null) {
                     editOrderItem.setRingOrderItemList(new ArrayList<>());
@@ -116,7 +114,10 @@ public class AddOrderActivity extends AppCompatActivity {
                 editOrderItem.getRingOrderItemList().clear();
 
                 editOrderItem.setEditDateTime(new java.util.Date().getTime());
+                editOrderItem.setEditor(AppOptions.getInstance().getUserName(this));
             } else {
+                String orderAuthor = AppOptions.getInstance().getUserName(this);
+
                 editOrderItem = new OrderItem(UUID.randomUUID().toString(), orderTitle, orderDetails, orderAuthor);
                 createFlag = true;
             }

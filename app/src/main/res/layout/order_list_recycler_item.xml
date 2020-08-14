@@ -120,6 +120,30 @@
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:id="@+id/editor_title"
+                        android:textColor="@color/colorPrimary"
+                        android:layout_marginTop="4dp"
+                        android:textSize="12sp"
+                        android:layout_weight="1"
+                        android:text="@string/editor_title"/>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/editor_value"
+                        android:textColor="@color/colorPrimary"
+                        android:layout_marginTop="4dp"
+                        android:textSize="12sp"
+                        android:layout_weight="1" />
+                </TableRow>
+                <TableRow
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
                         android:id="@+id/edit_date_title"
                         android:textColor="@color/colorPrimary"
                         android:layout_marginTop="4dp"

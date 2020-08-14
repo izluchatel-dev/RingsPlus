@@ -73,7 +73,8 @@
     <string name="help_archive_order_description">Нельзя редактировать. Состав не учитывается при расчете итогов дня.
         Могут быть исключены из списка при помощи настройки \'Показывать списанные заказы\' </string>
 
-    <string name="author_title">Автор:</string>
+    <string name="author_title">Создал:</string>
+    <string name="editor_title">Изменил:</string>
     <string name="create_date_time_title">Дата создания:</string>
     <string name="edit_date_time_title">Дата изменения:</string>
 

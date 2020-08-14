@@ -80,6 +80,15 @@ public class OrderListViewAdapter extends RecyclerView.Adapter<OrderListViewAdap
             holder.mAuthor.setVisibility(View.GONE);
         }
 
+        if ((nextOrderItem.getEditor() != null) && (!nextOrderItem.getEditor().isEmpty())) {
+            holder.mEditorTitle.setVisibility(View.VISIBLE);
+            holder.mEditor.setText(nextOrderItem.getEditor());
+            holder.mEditor.setVisibility(View.VISIBLE);
+        } else {
+            holder.mEditorTitle.setVisibility(View.GONE);
+            holder.mEditor.setVisibility(View.GONE);
+        }
+
         if ((nextOrderItem.getCreateDateTime() != null) && (nextOrderItem.getCreateDateTime() > 0)) {
             holder.mCreateDateTimeTitle.setVisibility(View.VISIBLE);
             holder.mCreateDateTime.setText(getDateTimeFmt(nextOrderItem.getCreateDateTime()));
@@ -137,6 +146,8 @@ public class OrderListViewAdapter extends RecyclerView.Adapter<OrderListViewAdap
         TextView mOrderRingsText;
         TextView mAuthor;
         TextView mAuthorTitle;
+        TextView mEditor;
+        TextView mEditorTitle;
         TextView mCreateDateTime;
         TextView mCreateDateTimeTitle;
         TextView mEditDateTime;
@@ -151,6 +162,8 @@ public class OrderListViewAdapter extends RecyclerView.Adapter<OrderListViewAdap
             mOrderRingsText = itemView.findViewById(R.id.rings_list_text);
             mAuthor = itemView.findViewById(R.id.author_value);
             mAuthorTitle = itemView.findViewById(R.id.author_title);
+            mEditor = itemView.findViewById(R.id.editor_value);
+            mEditorTitle = itemView.findViewById(R.id.editor_title);
             mCreateDateTime = itemView.findViewById(R.id.create_date_value);
             mCreateDateTimeTitle = itemView.findViewById(R.id.create_date_title);
             mEditDateTime = itemView.findViewById(R.id.edit_date_value);
