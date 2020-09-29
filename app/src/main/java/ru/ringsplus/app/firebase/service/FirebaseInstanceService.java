@@ -15,6 +15,7 @@ import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
 import java.util.Random;
+import java.util.UUID;
 
 import androidx.core.app.NotificationCompat;
 import ru.ringsplus.app.MainActivity;
@@ -76,7 +77,8 @@ public class FirebaseInstanceService extends FirebaseMessagingService {
                 intent.putExtra(PUT_PARAM_YEAR, Integer.valueOf(year));
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-                PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
+                PendingIntent pendingIntent = PendingIntent.getActivity(this, UUID.randomUUID().hashCode(), intent,
+                        PendingIntent.FLAG_UPDATE_CURRENT);
 
                 NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this,
                         getString(R.string.default_notification_channel_id));
