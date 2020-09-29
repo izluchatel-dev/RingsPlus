@@ -5,10 +5,8 @@ import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import java.text.DateFormat;
@@ -25,6 +23,7 @@ public class OrderListViewAdapter extends RecyclerView.Adapter<OrderListViewAdap
     private LayoutInflater mInflater;
     private OrderClickListener mOrderClickListener;
     private OrderCheckStatusClickListener mOrderCheckStatusClickListener;
+    private OrderItemPopUpMenuListener mOrderItemPopUpMenuListener;
 
     public OrderListViewAdapter(Context context, List<OrderItem> data) {
         this.mInflater = LayoutInflater.from(context);
@@ -181,6 +180,14 @@ public class OrderListViewAdapter extends RecyclerView.Adapter<OrderListViewAdap
                     mOrderClickListener.onItemClick(itemView, getAdapterPosition());
                 }
             });
+
+            itemView.setOnLongClickListener(view -> {
+                if (mOrderItemPopUpMenuListener != null) {
+                    mOrderItemPopUpMenuListener.onItemPopUpMenuClick(mOrderIcon, getAdapterPosition());
+                }
+
+                return true;
+            });
         }
     }
 
@@ -196,11 +203,19 @@ public class OrderListViewAdapter extends RecyclerView.Adapter<OrderListViewAdap
         this.mOrderCheckStatusClickListener = checkStatusClickListener;
     }
 
+    public void setOrderItemPopUpMenuListener(OrderItemPopUpMenuListener orderItemPopUpMenuListener) {
+        this.mOrderItemPopUpMenuListener = orderItemPopUpMenuListener;
+    }
+
     public interface OrderClickListener {
         void onItemClick(View view, int position);
     }
 
     public interface OrderCheckStatusClickListener {
         void onCheckStatusButtonClick(View view, int position);
+    }
+
+    public interface OrderItemPopUpMenuListener {
+        void onItemPopUpMenuClick(View view, int position);
     }
 }

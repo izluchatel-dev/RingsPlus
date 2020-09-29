@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
@@ -20,10 +21,10 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/order_icon_new"
             android:drawablePadding="8dp"
             android:textSize="16sp"
-            android:text="@string/help_new_order_title" />
+            android:text="@string/help_new_order_title"
+            app:drawableStartCompat="@drawable/order_icon_new" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -37,10 +38,10 @@
             android:layout_marginTop="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/order_icon_execute"
             android:drawablePadding="8dp"
             android:textSize="16sp"
-            android:text="@string/help_execute_order_title" />
+            android:text="@string/help_execute_order_title"
+            app:drawableLeftCompat="@drawable/order_icon_execute" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -54,10 +55,10 @@
             android:layout_marginTop="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/order_icon_archive"
             android:drawablePadding="8dp"
             android:textSize="16sp"
-            android:text="@string/help_archive_order_title" />
+            android:text="@string/help_archive_order_title"
+            app:drawableLeftCompat="@drawable/order_icon_archive" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -66,6 +67,22 @@
             android:textColor="@color/disabledColor"
             android:textSize="12sp"
             android:text="@string/help_archive_order_description" />
+
+        <TextView
+            android:layout_marginTop="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawablePadding="8dp"
+            android:textSize="16sp"
+            android:text="@string/help_order_title"
+            app:drawableLeftCompat="@drawable/help_info" />
+
+        <TextView
+            android:layout_marginTop="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:text="@string/help_move_order_item_description" />
     </LinearLayout>
 
 </LinearLayout>

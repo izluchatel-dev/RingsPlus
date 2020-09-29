@@ -1,26 +1,36 @@
 package ru.ringsplus.app;
 
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.DatePicker;
+import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.util.Calendar;
+import java.util.UUID;
+
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import ru.ringsplus.app.firebase.FireBaseConnnection;
 import ru.ringsplus.app.firebase.FireBaseOrders;
+import ru.ringsplus.app.firebase.FireBaseOrdersEditor;
+import ru.ringsplus.app.model.AppOptions;
 import ru.ringsplus.app.model.DayItem;
 import ru.ringsplus.app.model.DayStatus;
 import ru.ringsplus.app.model.OrderItem;
 import ru.ringsplus.app.model.OrderStatus;
 import ru.ringsplus.app.utils.DrawableUtils;
 
+import static java.lang.Boolean.TRUE;
 import static ru.ringsplus.app.model.DayStatus.CloseDay;
 import static ru.ringsplus.app.model.DayStatus.OpenDay;
 import static ru.ringsplus.app.utils.CalendarUtils.PUT_PARAM_DAY;
@@ -29,7 +39,9 @@ import static ru.ringsplus.app.utils.CalendarUtils.PUT_PARAM_YEAR;
 import static ru.ringsplus.app.utils.CalendarUtils.getDayItemFromIntent;
 
 
-public class OrderListActivity extends AppCompatActivity implements OrderListViewAdapter.OrderClickListener, OrderListViewAdapter.OrderCheckStatusClickListener {
+public class OrderListActivity extends AppCompatActivity implements OrderListViewAdapter.OrderClickListener,
+        OrderListViewAdapter.OrderCheckStatusClickListener,
+        OrderListViewAdapter.OrderItemPopUpMenuListener {
 
     public static final String PUT_EDIT_ORDER_ID = "orderId";
 
@@ -108,7 +120,7 @@ public class OrderListActivity extends AppCompatActivity implements OrderListVie
 
         FireBaseConnnection.setConnectedChecker(this, true);
         mFireBaseOrders = new FireBaseOrders(recyclerOrderList, this, this,
-                mDayItem, this::checkStatusDay);
+                this, mDayItem, this::checkStatusDay);
     }
 
     private void checkStatusDay(DayStatus dayStatus) {
@@ -181,4 +193,50 @@ public class OrderListActivity extends AppCompatActivity implements OrderListVie
         dialogBuilder.show();
     }
 
+    @Override
+    public void onItemPopUpMenuClick(View view, int position) {
+        OrderItem mCheckOrderItem = mFireBaseOrders.getOrderListViewAdapter().getItem(position);
+
+        if (mCheckOrderItem.getOrderStatus() != OrderStatus.ArchiveOrder) {
+            PopupMenu popup = new PopupMenu(this, view);
+
+            popup.inflate(R.menu.menu_item_popup);
+
+            popup.setOnMenuItemClickListener(item -> {
+                switch (item.getItemId()) {
+                    case R.id.action_order_change_date_item:
+                    {
+                        final Calendar myCalendar = Calendar.getInstance();
+
+                        DatePickerDialog.OnDateSetListener dateSetListener = (view1, year, monthOfYear, dayOfMonth) -> {
+                            DayItem newDayItem = new DayItem(year, monthOfYear + 1, dayOfMonth);
+
+                            //Add new order
+                            FireBaseOrders mFireBaseNewOrders = new FireBaseOrders(recyclerOrderList, this, this,
+                                    this, newDayItem, this::checkStatusDay);
+
+                            mFireBaseNewOrders.createCopyOrderItem(this, mCheckOrderItem, newDayItem);
+
+//                            Update old order item
+                            String newOrderDesc = getString(R.string.order_change_date_item_title_fmt);
+                            String newOrderDate = String.format("%d.%d.%d", newDayItem.getDay(), newDayItem.getMonth(), newDayItem.getYear());
+                            mCheckOrderItem.setDetails(String.format(newOrderDesc, mCheckOrderItem.getDetails(), newOrderDate)); ;
+
+                            mFireBaseOrders.setLastOrderPosition(position - 1);
+                            mFireBaseOrders.updateOrderItemStatus(this, mCheckOrderItem, OrderStatus.ArchiveOrder, mDayItem);
+                        };
+
+                        new DatePickerDialog(this, dateSetListener, myCalendar
+                                .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                                myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+                        return true;
+                    }
+                    default:
+                        return false;
+                }
+            });
+
+            popup.show();
+        }
+    }
 }

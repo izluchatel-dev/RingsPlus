@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.UUID;
 
 import androidx.recyclerview.widget.RecyclerView;
 import ru.ringsplus.app.OrderListViewAdapter;
@@ -44,6 +45,7 @@ public class FireBaseOrders {
     public FireBaseOrders(RecyclerView recyclerView,
                           OrderListViewAdapter.OrderClickListener orderClickListener,
                           OrderListViewAdapter.OrderCheckStatusClickListener checkStatusClickListener,
+                          OrderListViewAdapter.OrderItemPopUpMenuListener orderItemPopUpMenuListener,
                           DayItem dayItem, CheckDayStatusInterface checkDayStatusInterface) {
 
         String pathMonthAndYear = String.valueOf(dayItem.getMonth()) + String.valueOf(dayItem.getYear());
@@ -81,6 +83,7 @@ public class FireBaseOrders {
                 mOrderListViewAdapter = new OrderListViewAdapter(recyclerView.getContext(), orderItems);
                 mOrderListViewAdapter.setOrderCheckStatusClickListener(checkStatusClickListener);
                 mOrderListViewAdapter.setOrderClickListener(orderClickListener);
+                mOrderListViewAdapter.setOrderItemPopUpMenuListener(orderItemPopUpMenuListener);
                 recyclerView.setAdapter(mOrderListViewAdapter);
 
                 if (lastOrderPosition > 0) {
@@ -161,6 +164,46 @@ public class FireBaseOrders {
                 Toast.makeText(context, error.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    public void createCopyOrderItem(Context context, OrderItem orderItem, DayItem dayItem) {
+        String orderAuthor = AppOptions.getInstance().getUserName(context);
+
+        OrderItem newOrderItem = new OrderItem(UUID.randomUUID().toString(),
+                orderItem.getTitle(), orderItem.getDetails(), orderAuthor);
+
+        if (orderItem.getRingOrderItemList() != null) {
+            newOrderItem.getRingOrderItemList().addAll(orderItem.getRingOrderItemList());
+        }
+        newOrderItem.setOrderStatus(orderItem.getOrderStatus());
+
+        String mDayStr = String.format("%d.%d.%d", dayItem.getDay(), dayItem.getMonth(), dayItem.getYear());
+        String finalChangeStatusResult = String.format(context.getString(R.string.copy_order_item_successful), newOrderItem.getTitle(), mDayStr);
+
+        mOrdersStatusReference.child(newOrderItem.getId()).setValue(newOrderItem, (error, ref) -> {
+            if (error == null) {
+                StringBuilder notifyTitle = new StringBuilder(finalChangeStatusResult);
+                notifyTitle.append(" (");
+                notifyTitle.append(mDayStr);
+                notifyTitle.append(")");
+
+                String mAuthorTitle = String.format(context.getString(R.string.author_notify_fmt), orderAuthor);
+
+                new MessageSenderService().sendPost(notifyTitle.toString(), mAuthorTitle, dayItem);
+
+                Toast.makeText(context, finalChangeStatusResult, Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(context, error.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+
+        if (mDayStatus == null) {
+            dayStatusReference.setValue(OpenDay, (error, ref) -> {
+                if (error != null) {
+                    Toast.makeText(context, error.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            });
+        }
     }
 
     public OrderListViewAdapter getOrderListViewAdapter() {

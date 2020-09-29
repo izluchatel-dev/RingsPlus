@@ -16,6 +16,9 @@
     <string name="app_name">ЖБИ Кольца</string>
     <string name="detail_button">Редактировать состав</string>
 
+    <string name="order_change_date_item">Перенести на другой день…</string>
+    <string name="order_change_date_item_title_fmt">%s (перенесен на %s)</string>
+
     <string name="user_hint">Сменить пользователя…</string>
     <string name="stock_hint">Склад</string>
     <string name="options_hint">Настройки</string>
@@ -55,6 +58,7 @@
     <string name="change_order_status_execute">Списать заказ \'%s\'?</string>
     <string name="change_order_status_execute_successful">Заказ \'%s\' успешно выполнен</string>
     <string name="change_order_status_archive_successful">Заказ \'%s\' успешно списан</string>
+    <string name="copy_order_item_successful">Заказ \'%s\' успешно перенесен на \'%s\'</string>
 
     <string name="add_item_dialog_title">Введите имя нового элемента и нажмите ОК</string>
     <string name="summa_rings_order_postfix">%d шт.</string>
@@ -72,6 +76,12 @@
     <string name="help_archive_order_title"> - СПИСАННЫЙ ЗАКАЗ</string>
     <string name="help_archive_order_description">Нельзя редактировать. Состав не учитывается при расчете итогов дня.
         Могут быть исключены из списка при помощи настройки \'Показывать списанные заказы\' </string>
+    <string name="help_order_title"> - ДОПОЛНИТЕЛЬНО</string>
+    <string name="help_move_order_item_description">\tДля переноса существующего заказа на другой день была добавлена команда
+        \'Перенести на другой день…\'. Для ее вызова необходимо выбрать нужный заказ и удерживать на нем палец до появления контекстного меню.
+        Переносить можно заказы в состоянии \'НОВЫЙ ЗАКАЗ\' и \'ВЫПОЛНЕННЫЙ ЗАКАЗ\'.
+        Искомый заказ переводится в состояние \'СПИСАННЫЙ ЗАКАЗ\', а в
+        поле описания добавляется соответствующая пометка о переносе на другой день.</string>
 
     <string name="author_title">Создал:</string>
     <string name="editor_title">Изменил:</string>
